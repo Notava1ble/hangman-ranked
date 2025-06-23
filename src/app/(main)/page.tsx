@@ -1,6 +1,7 @@
-import { fetchQuery } from "convex/nextjs";
+import { fetchQuery, preloadQuery } from "convex/nextjs";
 import { api } from "../../../convex/_generated/api";
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
+import UserStats from "./UserStats";
 
 const Page = async () => {
   // const [previousGameStats, setPreviousGameStats] = useState<{
@@ -60,6 +61,12 @@ const Page = async () => {
     { token: await convexAuthNextjsToken() }
   );
 
+  const preloadedStats = await preloadQuery(
+    api.user.getUserStats,
+    {},
+    { token: await convexAuthNextjsToken() }
+  );
+
   return (
     <div className="w-full">
       <div className="w-full flex-center pt-16">
@@ -67,6 +74,7 @@ const Page = async () => {
           Hello there {user ? user.name : "Player"}
         </h1>
       </div>
+      <UserStats preloadedStats={preloadedStats} />
     </div>
   );
 };

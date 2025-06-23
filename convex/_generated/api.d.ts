@@ -17,6 +17,7 @@ import type * as auth from "../auth.js";
 import type * as data_allWords from "../data/allWords.js";
 import type * as game from "../game.js";
 import type * as http from "../http.js";
+import type * as user from "../user.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -31,6 +32,7 @@ declare const fullApi: ApiFromModules<{
   "data/allWords": typeof data_allWords;
   game: typeof game;
   http: typeof http;
+  user: typeof user;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
