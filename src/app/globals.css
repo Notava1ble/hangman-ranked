@@ -120,3 +120,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
+  .flex-col-center {
+    @apply flex flex-col justify-center items-center;
+  }
+}
