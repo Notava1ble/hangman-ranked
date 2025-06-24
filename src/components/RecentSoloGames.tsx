@@ -48,8 +48,7 @@ const RecentSoloGames = ({
                       : "bg-red-100 hover:bg-red-200"
                   }
                   ${i === 0 && "rounded-t-xl"}
-                    ${i === 5 && "rounded-b-xl"}
-                  
+                  ${i === 4 && "rounded-b-xl"}
                 `}
               >
                 <TableCell>{game.word}</TableCell>

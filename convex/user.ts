@@ -35,11 +35,11 @@ export const getRecentSoloGames = query({
   handler: async (ctx) => {
     const user = await getLoggedInUserHelper(ctx);
     if (!user) {
-      throw new Error("User Not Authenticated");
+      throw new Error("User not authenticated");
     }
     const recentGames = await ctx.db
       .query("games")
-      .withIndex("by_user", (q) => q.eq("userId", user?._id))
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
       .order("desc")
       .take(5);
     return recentGames;
