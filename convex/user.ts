@@ -1,5 +1,6 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { query } from "./_generated/server";
+import { getLoggedInUserHelper } from "./auth";
 
 export const getUserStats = query({
   handler: async (ctx) => {
@@ -27,5 +28,20 @@ export const getUserStats = query({
       totalWins,
       totalScore,
     };
+  },
+});
+
+export const getRecentSoloGames = query({
+  handler: async (ctx) => {
+    const user = await getLoggedInUserHelper(ctx);
+    if (!user) {
+      throw new Error("User Not Authenticated");
+    }
+    const recentGames = await ctx.db
+      .query("games")
+      .withIndex("by_user", (q) => q.eq("userId", user?._id))
+      .order("desc")
+      .take(5);
+    return recentGames;
   },
 });

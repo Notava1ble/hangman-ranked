@@ -2,7 +2,7 @@ import { fetchQuery, preloadQuery } from "convex/nextjs";
 import { api } from "../../../convex/_generated/api";
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
 import UserStats from "./UserStats";
-import SoloGame from "@/components/SoloGame";
+import RecentSoloGames from "@/components/RecentSoloGames";
 
 const Page = async () => {
   // const [previousGameStats, setPreviousGameStats] = useState<{
@@ -56,16 +56,20 @@ const Page = async () => {
   //   }
   // };
 
-  const user = await fetchQuery(
-    api.auth.loggedInUser,
-    {},
-    { token: await convexAuthNextjsToken() }
-  );
+  const token = await convexAuthNextjsToken();
+
+  const user = await fetchQuery(api.auth.loggedInUser, {}, { token });
 
   const preloadedStats = await preloadQuery(
     api.user.getUserStats,
     {},
-    { token: await convexAuthNextjsToken() }
+    { token }
+  ).catch(() => null);
+
+  const preloadedRecentGames = await preloadQuery(
+    api.user.getRecentSoloGames,
+    {},
+    { token }
   ).catch(() => null);
 
   return (
@@ -76,7 +80,9 @@ const Page = async () => {
         </h1>
       </div>
       {preloadedStats && <UserStats preloadedStats={preloadedStats} />}
-      <SoloGame />
+      {preloadedRecentGames && (
+        <RecentSoloGames preloadedRecentGames={preloadedRecentGames} />
+      )}
     </div>
   );
 };
