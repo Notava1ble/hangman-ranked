@@ -77,6 +77,10 @@ const HangmanFigure = ({ wrongGuesses }: { wrongGuesses: number }) => {
     />,
   ];
 
+  const minGuesses = 0;
+  const maxGuesses = parts.length;
+  const clampedGuesses = Math.max(minGuesses, Math.min(wrongGuesses, maxGuesses));
+
   return (
     <div className="border-4 border-black w-fit rounded-sm pb-4 mx-auto bg-white mt-4">
       <svg height="250" width="200" className="mx-auto mt-4">
@@ -102,7 +106,7 @@ const HangmanFigure = ({ wrongGuesses }: { wrongGuesses: number }) => {
 
         {/* Animated Parts */}
         <AnimatePresence initial={false}>
-          {parts.slice(0, wrongGuesses).map((part, i) => (
+          {parts.slice(0, clampedGuesses).map((part, i) => (
             <React.Fragment key={i}>{part}</React.Fragment>
           ))}
         </AnimatePresence>
