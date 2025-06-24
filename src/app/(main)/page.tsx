@@ -66,7 +66,7 @@ const Page = async () => {
     api.user.getUserStats,
     {},
     { token: await convexAuthNextjsToken() }
-  );
+  ).catch(() => null);
 
   return (
     <div className="w-full h-full">
@@ -75,7 +75,7 @@ const Page = async () => {
           Hello there {user ? user.name : "Player"}
         </h1>
       </div>
-      <UserStats preloadedStats={preloadedStats} />
+      {preloadedStats && <UserStats preloadedStats={preloadedStats} />}
       <SoloGame />
     </div>
   );
