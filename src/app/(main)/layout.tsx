@@ -6,10 +6,10 @@ const Layout = ({
   children: React.ReactNode;
 }>) => {
   return (
-    <>
+    <div className="w-full h-full">
       <Navbar />
-      {children}
-    </>
+      <main>{children}</main>
+    </div>
   );
 };
 export default Layout;

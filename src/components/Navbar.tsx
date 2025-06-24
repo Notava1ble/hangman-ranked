@@ -15,7 +15,7 @@ const Navbar = () => {
   const user = useQuery(api.auth.loggedInUser);
 
   return (
-    <div className="sticky top-0 pt-6 px-4 pb-6 w-full bg-[var(--background)]/40 backdrop-blur-md border-b-1 z-100">
+    <header className="sticky top-0 pt-6 px-4 pb-6 w-full bg-card/40 backdrop-blur-md border-b-1 z-100">
       <div className="w-full h-full flex justify-between items-center">
         <div className="flex items-center gap-16">
           <h1 className="text-3xl font-mono font-medium">
@@ -49,7 +49,7 @@ const Navbar = () => {
           </Unauthenticated>
         </div>
       </div>
-    </div>
+    </header>
   );
 };
 export default Navbar;

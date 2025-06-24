@@ -2,6 +2,7 @@ import { fetchQuery, preloadQuery } from "convex/nextjs";
 import { api } from "../../../convex/_generated/api";
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
 import UserStats from "./UserStats";
+import SoloGame from "@/components/SoloGame";
 
 const Page = async () => {
   // const [previousGameStats, setPreviousGameStats] = useState<{
@@ -68,13 +69,14 @@ const Page = async () => {
   );
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full">
       <div className="w-full flex-center pt-16">
         <h1 className="text-4xl font-semibold">
           Hello there {user ? user.name : "Player"}
         </h1>
       </div>
       <UserStats preloadedStats={preloadedStats} />
+      <SoloGame />
     </div>
   );
 };
