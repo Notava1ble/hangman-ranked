@@ -16,14 +16,17 @@ const Page = async () => {
   > | null = null;
 
   if (user) {
-    preloadedStats = await preloadQuery(api.user.getUserStats, {}, { token });
+    preloadedStats = await preloadQuery(
+      api.user.getUserStats,
+      {},
+      { token }
+    ).catch(() => null);
     preloadedRecentGames = await preloadQuery(
       api.user.getRecentSoloGames,
       {},
       { token }
-    );
+    ).catch(() => null);
   }
-
   return (
     <div className="w-full h-full">
       <div className="w-full flex-center pt-16">
