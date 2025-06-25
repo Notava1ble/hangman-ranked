@@ -1,5 +1,6 @@
 "use client";
 
+import Container from "@/components/Container";
 import LinkBtn from "@/components/LinkBtn";
 import {
   Tooltip,
@@ -33,7 +34,7 @@ const UserStats: React.FC<UserStatsProps> = ({ preloadedStats }) => {
   const userStats = usePreloadedQuery(preloadedStats);
 
   return (
-    <div className="w-[50%] mx-auto mt-6 flex justify-around items-center bg-white p-4 rounded-md relative drop-shadow-lg">
+    <Container className="flex justify-around items-center p-4 relative">
       <span>Total Games: {userStats.totalGames}</span>
       <span>Total Score: {userStats.totalScore}</span>
       <span>Total Wins: {userStats.totalWins}</span>
@@ -52,7 +53,7 @@ const UserStats: React.FC<UserStatsProps> = ({ preloadedStats }) => {
           <p>View all Stats</p>
         </TooltipContent>
       </Tooltip>
-    </div>
+    </Container>
   );
 };
 export default UserStats;

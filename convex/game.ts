@@ -66,23 +66,37 @@ export const getDisplayWord = query({
     const word = activeGame.word;
     const guesses = activeGame.guessedLetters;
     if (!guesses || guesses.length === 0) {
-      return "_".repeat(word.length);
+      return Array(word.length).fill("_") as string[];
     }
     const displayWord = word
       .split("")
-      .map((letter) => (guesses.includes(letter) ? letter : "_"))
-      .join("");
+      .map((letter) => (guesses.includes(letter) ? letter : "_"));
     return displayWord;
   },
 });
 
-export const getGuesses = query({
+export const getCurrentGameStats = query({
   handler: async (ctx) => {
     const activeGame = await getActiveGameHelper(ctx);
     if (!activeGame || !activeGame?.guessedLetters) {
-      return [];
+      return {
+        guesses: [],
+        correctGuesses: [],
+        mistakes: 0,
+        attempts: 0,
+      };
     }
-    return activeGame.guessedLetters;
+    const guesses = activeGame.guessedLetters;
+    const correctGuesses = activeGame.correctGuesses;
+    const mistakes = activeGame.mistakes;
+    const attempts = activeGame.attempts;
+
+    return {
+      guesses,
+      correctGuesses,
+      mistakes,
+      attempts,
+    };
   },
 });
 
@@ -90,7 +104,8 @@ export const makeGuess = mutation({
   args: { guess: v.string() },
   handler: async (ctx, args) => {
     const guess = args.guess.toLowerCase();
-    if (guess.length !== 1 || !/^[a-z]$/.test(args.guess)) {
+
+    if (guess.length !== 1 || !/^[a-z]$/.test(guess)) {
       throw new Error("Invalid guess. Please enter a single letter.");
     }
     const game = await getActiveGameHelper(ctx);

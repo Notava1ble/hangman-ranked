@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import React from "react";
 
-const HangmanFigure = ({ wrongGuesses }: { wrongGuesses: number }) => {
+const HangmanFigure = ({ wrongGuesses = 0 }: { wrongGuesses?: number }) => {
   const parts = [
     <motion.circle
       key="head"
@@ -79,7 +79,10 @@ const HangmanFigure = ({ wrongGuesses }: { wrongGuesses: number }) => {
 
   const minGuesses = 0;
   const maxGuesses = parts.length;
-  const clampedGuesses = Math.max(minGuesses, Math.min(wrongGuesses, maxGuesses));
+  const clampedGuesses = Math.max(
+    minGuesses,
+    Math.min(wrongGuesses, maxGuesses)
+  );
 
   return (
     <div className="border-4 border-black w-fit rounded-sm pb-4 mx-auto bg-white mt-4">

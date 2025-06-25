@@ -40,6 +40,7 @@ export const getRecentSoloGames = query({
     const recentGames = await ctx.db
       .query("games")
       .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .filter((q) => q.eq(q.field("isCompleted"), true))
       .order("desc")
       .take(5);
     return recentGames;

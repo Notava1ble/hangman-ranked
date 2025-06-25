@@ -4,6 +4,7 @@ import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
 import UserStats from "./UserStats";
 import RecentSoloGames from "@/components/RecentSoloGames";
 import { Preloaded } from "convex/react";
+import SoloGame from "@/components/SoloGame";
 
 const Page = async () => {
   const token = await convexAuthNextjsToken();
@@ -35,6 +36,7 @@ const Page = async () => {
         </h1>
       </div>
       {preloadedStats && <UserStats preloadedStats={preloadedStats} />}
+      <SoloGame />
       {preloadedRecentGames && (
         <RecentSoloGames preloadedRecentGames={preloadedRecentGames} />
       )}

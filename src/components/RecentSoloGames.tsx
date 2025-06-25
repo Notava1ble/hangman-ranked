@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
+import Container from "./Container";
 
 export type PreloadedRecentGamesType = Preloaded<
   typeof api.user.getRecentSoloGames
@@ -24,7 +25,7 @@ const RecentSoloGames = ({
   const recentGames = usePreloadedQuery(preloadedRecentGames);
 
   return (
-    <div className="bg-white p-6 rounded-md drop-shadow-lg w-[50%] mx-auto mt-6">
+    <Container className="transition-all">
       <Table>
         <TableCaption>Your recent Games</TableCaption>
         <TableHeader>
@@ -61,7 +62,7 @@ const RecentSoloGames = ({
           })}
         </TableBody>
       </Table>
-    </div>
+    </Container>
   );
 };
 export default RecentSoloGames;
