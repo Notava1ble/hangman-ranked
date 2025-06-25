@@ -53,7 +53,7 @@ const SoloGame = () => {
 
   if (!isGameActive) {
     return (
-      <div className="mx-auto w-[50%] flex-center mt-6">
+      <Container className="flex-center">
         <Button
           ref={startButtonRef}
           onClick={() => createGame()}
@@ -63,7 +63,7 @@ const SoloGame = () => {
         >
           Start Game
         </Button>
-      </div>
+      </Container>
     );
   }
 
