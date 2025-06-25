@@ -29,15 +29,15 @@ const RecentSoloGames = ({
         <TableCaption>Your recent Games</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Word</TableHead>
+            <TableHead className="w-[150px] pl-8">Word</TableHead>
             <TableHead className="text-right">Score</TableHead>
             <TableHead className="text-right">Mistakes</TableHead>
             <TableHead className="text-right">Attempts</TableHead>
-            <TableHead className="text-right">Status</TableHead>
+            <TableHead className="pr-8 text-right">Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {recentGames.map((game, i) => {
+          {recentGames.map((game) => {
             return (
               <TableRow
                 key={game._id}
@@ -47,15 +47,15 @@ const RecentSoloGames = ({
                       ? "bg-green-100 hover:bg-green-200"
                       : "bg-red-100 hover:bg-red-200"
                   }
-                  ${i === 0 && "rounded-t-xl"}
-                  ${i === 4 && "rounded-b-xl"}
                 `}
               >
-                <TableCell>{game.word}</TableCell>
-                <TableCell>{game.score}</TableCell>
-                <TableCell>{game.mistakes}</TableCell>
-                <TableCell>{game.attempts}</TableCell>
-                <TableCell>{game.isWon ? "Won" : "Loss"}</TableCell>
+                <TableCell className="pl-8">{game.word}</TableCell>
+                <TableCell className="text-right">{game.score}</TableCell>
+                <TableCell className="text-right">{game.mistakes}</TableCell>
+                <TableCell className="text-right">{game.attempts}</TableCell>
+                <TableCell className="pr-8 text-right">
+                  {game.isWon ? "Won" : "Loss"}
+                </TableCell>
               </TableRow>
             );
           })}

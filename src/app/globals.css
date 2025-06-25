@@ -4,6 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --color-body-background: var(--body-background);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -45,7 +46,8 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(97% 0.014 254.604);
+  --body-background: oklch(97% 0.014 254.604);
+  --background: oklch(1, 0, 0);
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
@@ -117,7 +119,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-body-background text-foreground;
   }
 }
 
