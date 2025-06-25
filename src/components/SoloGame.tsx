@@ -7,28 +7,55 @@ import Container from "./Container";
 import Keyboard from "./Keyboard";
 import HangmanFigure from "./HangmanFigure";
 import { cn } from "@/lib/utils";
+import { useCallback, useEffect, useRef } from "react";
 
 const SoloGame = () => {
+  const startButtonRef = useRef<HTMLButtonElement>(null);
+
   const displayWord = useQuery(api.game.getDisplayWord);
-  const currectGameStats = useQuery(api.game.getCurrentGameStats);
+  const currentGameStats = useQuery(api.game.getCurrentGameStats);
 
   const createGame = useMutation(api.game.createGame);
   const makeGuess = useMutation(api.game.makeGuess);
 
-  const wrongGuesses = currectGameStats?.guesses.filter(
-    (q) => !currectGameStats.correctGuesses.includes(q)
+  const isGameActive = !!displayWord;
+  const wrongGuesses = currentGameStats?.guesses.filter(
+    (q) => !currentGameStats.correctGuesses.includes(q)
   );
 
-  const onKeyPress = (key: string) => {
-    if (!currectGameStats?.guesses.includes(key.toLowerCase())) {
-      makeGuess({ guess: key });
-    }
-  };
+  const onKeyPress = useCallback(
+    (key: string) => {
+      if (!currentGameStats?.guesses.includes(key.toLowerCase())) {
+        makeGuess({ guess: key });
+      }
+    },
+    [currentGameStats, makeGuess]
+  );
+  useEffect(() => {
+    const handleKeyPressEvent = (event: KeyboardEvent) => {
+      const key = event.key.toLowerCase();
+      if (/^[a-z]$/.test(key)) {
+        onKeyPress(key);
+      }
+    };
+    window.addEventListener("keypress", handleKeyPressEvent);
 
-  if (!displayWord)
+    return () => {
+      window.removeEventListener("keypress", handleKeyPressEvent);
+    };
+  }, [onKeyPress]);
+
+  useEffect(() => {
+    if (!isGameActive) {
+      startButtonRef.current?.focus();
+    }
+  }, [isGameActive]);
+
+  if (!isGameActive) {
     return (
       <div className="mx-auto w-[50%] flex-center mt-6">
         <Button
+          ref={startButtonRef}
           onClick={() => createGame()}
           className="text-lg"
           size="lg"
@@ -38,22 +65,23 @@ const SoloGame = () => {
         </Button>
       </div>
     );
+  }
 
   return (
     <Container className="flex-center space-x-4">
       <div className="w-2/5 h-full mb-4">
-        <HangmanFigure wrongGuesses={currectGameStats?.mistakes} />
+        <HangmanFigure wrongGuesses={currentGameStats?.mistakes} />
       </div>
       <div className="w-3/5  flex flex-col justify-between items-center h-full gap-10 my-6">
         <div className="w-full flex gap-4">
           <MistakeAttemptCard
             displayText="Attempts"
-            amount={currectGameStats?.attempts.toString()}
+            amount={currentGameStats?.attempts.toString()}
             className="bg-green-100 text-green-600"
           />
           <MistakeAttemptCard
             displayText="Mistakes"
-            amount={currectGameStats?.mistakes.toString()}
+            amount={currentGameStats?.mistakes.toString()}
             className="bg-red-100 text-red-600"
           />
         </div>
@@ -61,9 +89,9 @@ const SoloGame = () => {
           {displayWord.join(" ")}
         </h2>
         <Keyboard
-          correctGuesses={currectGameStats?.correctGuesses}
+          correctGuesses={currentGameStats?.correctGuesses}
           wrongGuesses={wrongGuesses}
-          guesses={currectGameStats?.guesses}
+          guesses={currentGameStats?.guesses}
           onKeyPress={onKeyPress}
         />
       </div>
