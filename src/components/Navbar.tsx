@@ -19,7 +19,7 @@ const Navbar = () => {
       <div className="w-full h-full flex justify-between items-center">
         <div className="flex items-center gap-16">
           <h1 className="text-3xl font-mono font-medium">
-            <Link href="#">Hangman Ranked</Link>
+            <Link href="/">Hangman Ranked</Link>
           </h1>
           <div className="flex items-center gap-4">
             <LinkBtn href="/ranked" variant="link" size="sm">
