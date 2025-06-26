@@ -25,7 +25,7 @@ export const getSoloLeaderboard = query({
         word: game.word,
         mistakes: game.mistakes,
         attempts: game.attempts,
-        time: game.endTime! - game.startTime,
+        time: game.endTime! - game.startTime, // We know that end time is defined since when the game is completed (has a score) we also add the endTIme
       };
     });
   },

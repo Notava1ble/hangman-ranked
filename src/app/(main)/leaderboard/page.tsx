@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/table";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "../../../../convex/_generated/api";
-import { cn } from "@/lib/utils";
+import { cn, formatTime } from "@/lib/utils";
 
 export const revalidate = 1800; // 30 min
 
@@ -27,11 +27,11 @@ const Page = async () => {
               <TableRow className="bg-indigo-50">
                 <TableHead className="text-right w-[40px]">#</TableHead>
                 <TableHead>Player</TableHead>
-                <TableHead>Score</TableHead>
-                <TableHead>Word</TableHead>
-                <TableHead>Mistakes</TableHead>
-                <TableHead>Attempts</TableHead>
-                <TableHead>Time</TableHead>
+                <TableHead className="text-right">Score</TableHead>
+                <TableHead className="text-center">Word</TableHead>
+                <TableHead className="text-right">Attempts</TableHead>
+                <TableHead className="text-right">Mistakes</TableHead>
+                <TableHead className="text-right pr-6">Time</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -47,11 +47,17 @@ const Page = async () => {
                   >
                     <TableCell className="text-right">{game.rank}</TableCell>
                     <TableCell>{game.user}</TableCell>
-                    <TableCell>{game.score}</TableCell>
-                    <TableCell>{game.word}</TableCell>
-                    <TableCell>{game.attempts}</TableCell>
-                    <TableCell>{game.mistakes}</TableCell>
-                    <TableCell>{game.time}ms</TableCell>
+                    <TableCell className="text-right">{game.score}</TableCell>
+                    <TableCell className="text-center">{game.word}</TableCell>
+                    <TableCell className="text-right">
+                      {game.attempts}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {game.mistakes}
+                    </TableCell>
+                    <TableCell className="text-right pr-6">
+                      {formatTime(game.time)}
+                    </TableCell>
                   </TableRow>
                 );
               })}
