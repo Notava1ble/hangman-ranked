@@ -13,11 +13,14 @@ export default defineSchema({
     mistakes: v.number(),
     startTime: v.number(),
     endTime: v.optional(v.number()),
+    totalTime: v.optional(v.number()),
     isCompleted: v.boolean(),
     isWon: v.boolean(),
     score: v.optional(v.number()),
   })
     .index("by_user", ["userId"])
-    .index("by_completion", ["isCompleted"]),
+    .index("by_completion", ["isCompleted"])
+    .index("score", ["score"])
+    .index("total_time", ["totalTime"]),
   ...authTables,
 });
