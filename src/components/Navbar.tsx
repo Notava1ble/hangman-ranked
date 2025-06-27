@@ -46,13 +46,13 @@ const Navbar = () => {
         </nav>
         <nav className="fixed bottom-0 py-4 px-4 w-full bg-white/40 backdrop-blur-md border-t-1 rounded-t-md z-100">
           <div className="flex justify-around items-center">
-            <Link href="/">
+            <Link href="/" aria-label="Home">
               <Home />
             </Link>
-            <Link href="/ranked">
+            <Link href="/ranked" aria-label="Ranked">
               <Sword />
             </Link>
-            <Link href="/leaderboard">
+            <Link href="/leaderboard" aria-label="Leaderboard">
               <Trophy />
             </Link>
           </div>
