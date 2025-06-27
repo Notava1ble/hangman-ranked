@@ -34,10 +34,10 @@ const UserStats: React.FC<UserStatsProps> = ({ preloadedStats }) => {
   const userStats = usePreloadedQuery(preloadedStats);
 
   return (
-    <Container className="flex justify-around items-center p-4 relative">
-      <span>Total Games: {userStats.totalGames}</span>
-      <span>Total Score: {userStats.totalScore}</span>
-      <span>Total Wins: {userStats.totalWins}</span>
+    <Container className="flex justify-around items-center p-4 relative gap-4">
+      <span className="text-center">Total Games: {userStats.totalGames}</span>
+      <span className="text-center">Total Score: {userStats.totalScore}</span>
+      <span className="text-center">Total Wins: {userStats.totalWins}</span>
       <Tooltip>
         <TooltipTrigger className="absolute right-0 top-0">
           <LinkBtn

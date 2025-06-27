@@ -25,16 +25,16 @@ const RecentSoloGames = ({
   const recentGames = usePreloadedQuery(preloadedRecentGames);
 
   return (
-    <Container className="transition-all">
+    <Container>
       <Table>
         <TableCaption>Your recent Games</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[150px] pl-8">Word</TableHead>
+            <TableHead className="w-[150px] pl-6">Word</TableHead>
             <TableHead className="text-right">Score</TableHead>
             <TableHead className="text-right">Mistakes</TableHead>
             <TableHead className="text-right">Attempts</TableHead>
-            <TableHead className="pr-8 text-right">Status</TableHead>
+            <TableHead className="pr-6 text-right">Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -50,11 +50,11 @@ const RecentSoloGames = ({
                   }
                 `}
               >
-                <TableCell className="pl-8">{game.word}</TableCell>
+                <TableCell className="pl-6">{game.word}</TableCell>
                 <TableCell className="text-right">{game.score}</TableCell>
                 <TableCell className="text-right">{game.mistakes}</TableCell>
                 <TableCell className="text-right">{game.attempts}</TableCell>
-                <TableCell className="pr-8 text-right">
+                <TableCell className="pr-6 text-right">
                   {game.isWon ? "Won" : "Loss"}
                 </TableCell>
               </TableRow>

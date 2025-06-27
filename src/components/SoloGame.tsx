@@ -69,11 +69,11 @@ const SoloGame = () => {
 
   return (
     <Container className="flex-center space-x-4">
-      <div className="w-2/5 h-full mb-4">
+      <div className="w-2/5 h-full mb-4 hidden md:block">
         <HangmanFigure wrongGuesses={currentGameStats?.mistakes} />
       </div>
       <div className="w-3/5  flex flex-col justify-between items-center h-full gap-10 my-6">
-        <div className="w-full flex gap-4">
+        <div className="w-full flex-center gap-4">
           <MistakeAttemptCard
             displayText="Attempts"
             amount={currentGameStats?.attempts.toString()}

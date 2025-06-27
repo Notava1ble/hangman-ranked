@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 
 interface KeyboardProps {
@@ -34,20 +33,25 @@ const Keyboard: React.FC<KeyboardProps> = ({
             const isCorrect = correctGuesses.includes(key.toLowerCase());
             const isWrong = wrongGuesses.includes(key.toLowerCase());
             const isDisabled = guesses.includes(key.toLowerCase());
-            const baseClasses =
-              "w-8 h-9 flex items-center font-semibold justify-center text-sm rounded-sm font-mono bg-gray-200 text-black hover:bg-gray-300 cursor-pointer";
 
             return (
-              <Button
+              <button
                 key={key}
                 type="button"
-                size="sm"
                 className={cn(
-                  baseClasses,
-                  isCorrect &&
-                    "bg-green-200 text-green-800 cursor-not-allowed font-bold",
-                  isWrong &&
-                    "bg-red-400 text-red-800 cursor-not-allowed font-bold"
+                  // Base styles that are always applied
+                  "w-7 h-8 flex items-center font-semibold justify-center text-sm rounded-sm font-mono",
+                  {
+                    // Classes for the 'correct' state
+                    "bg-green-300 text-green-800 cursor-not-allowed font-bold":
+                      isCorrect,
+                    // Classes for the 'wrong' state
+                    "bg-red-300 text-red-800 cursor-not-allowed font-bold":
+                      isWrong,
+                    // Classes for the default/idle state
+                    "bg-gray-200 text-black hover:bg-gray-300 cursor-pointer":
+                      !isCorrect && !isWrong,
+                  }
                 )}
                 onClick={() => {
                   if (!isDisabled && onKeyPress) onKeyPress(key);
@@ -55,7 +59,7 @@ const Keyboard: React.FC<KeyboardProps> = ({
                 disabled={isDisabled}
               >
                 {key}
-              </Button>
+              </button>
             );
           })}
         </div>
