@@ -149,12 +149,18 @@ const ClientSoloGame = () => {
       <>
         {activeGame && (
           <Container className="flex-col-center">
-            <h2 className="text-lg">Previous Game</h2>
-            <div className="flex justify-around items-center w-full">
-              <span>word: {activeGame.word}</span>
-              <span>score: {activeGame.score}</span>
-              <span>mistakes: {activeGame.mistakes}</span>
-              <span>
+            <h2>Previous Game</h2>
+            <div className="flex justify-between sm:justify-around items-center w-full gap-6">
+              <span className="text-center text-sm sm:text-[16px]">
+                word: {activeGame.word}
+              </span>
+              <span className="text-center text-sm sm:text-[16px]">
+                score: {activeGame.score}
+              </span>
+              <span className="text-center text-sm sm:text-[16px]">
+                mistakes: {activeGame.mistakes}
+              </span>
+              <span className="text-center text-sm sm:text-[16px]">
                 time:{" "}
                 {formatTime(
                   activeGame.endTime
