@@ -182,6 +182,12 @@ const ClientSoloGame = () => {
             Start Game
           </Button>
         </Container>
+        <div className="p-4">
+          <p className="text-sm text-center text-muted-foreground">
+            Sign in to make your games appear on leaderboard and to have
+            statistics based on them
+          </p>
+        </div>
       </>
     );
   }
