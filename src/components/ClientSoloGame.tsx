@@ -155,13 +155,13 @@ const ClientSoloGame = () => {
               <span>score: {activeGame.score}</span>
               <span>mistakes: {activeGame.mistakes}</span>
               <span>
-                mistakes:{" "}
+                time:{" "}
                 {formatTime(
                   activeGame.endTime
                     ? activeGame.endTime - activeGame.startTime
                     : 0
                 )}
-              </span>
+              </span>{" "}
             </div>
           </Container>
         )}
@@ -187,7 +187,7 @@ const ClientSoloGame = () => {
   return (
     <Container className="flex-center space-x-4">
       <div className="w-2/5 h-full mb-4 hidden md:block">
-        <HangmanFigure wrongGuesses={activeGame?.mistakes} />
+        <HangmanFigure wrongGuesses={activeGame!.mistakes} />
       </div>
       <div className="w-3/5  flex flex-col justify-between items-center h-full gap-10 my-6">
         <div className="w-full flex-center gap-4">
@@ -206,9 +206,9 @@ const ClientSoloGame = () => {
           {displayWord.join(" ")}
         </h2>
         <Keyboard
-          correctGuesses={activeGame?.correctGuesses}
+          correctGuesses={activeGame!.correctGuesses}
           wrongGuesses={activeGame!.wrongGuesses}
-          guesses={activeGame?.guessedLetters}
+          guesses={activeGame!.guessedLetters}
           onKeyPress={onKeyPress}
         />
       </div>
