@@ -42,4 +42,4 @@ next-env.d.ts
 
 # Data Files
 /src/lib/allWords.ts
-/convex/data
+/convex/data/*
