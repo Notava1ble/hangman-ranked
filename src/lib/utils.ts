@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import words from "./allWords";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -21,3 +22,17 @@ export function formatTime(ms: number) {
   result += `${milliseconds}ms`;
   return result.trim();
 }
+
+export const getRandomWord = () => {
+  const filteredWords = words.filter((word) => word.length >= 5);
+  return filteredWords[Math.floor(Math.random() * filteredWords.length)];
+};
+
+export const getDisplayWord = (word: string, guesses: string[]) => {
+  if (!guesses || guesses.length === 0) {
+    return Array(word.length).fill("_") as string[];
+  }
+  return word
+    .split("")
+    .map((letter) => (guesses.includes(letter) ? letter : "_"));
+};
