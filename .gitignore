@@ -41,5 +41,5 @@ yarn-error.log*
 next-env.d.ts
 
 # Data Files
-/src/lib/allWords.ts
-/convex/data/*
+src/lib/allWords.ts
+convex/data/
