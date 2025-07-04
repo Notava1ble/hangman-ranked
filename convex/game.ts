@@ -1,7 +1,7 @@
 import { api } from "./_generated/api";
 import { mutation, query, QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
-import words from "./data/allWords";
+import { words } from "./data/allWords";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
 async function getActiveGameHelper(ctx: QueryCtx) {

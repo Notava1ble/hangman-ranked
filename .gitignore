@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+/tests
 
 # next.js
 /.next/
@@ -43,3 +44,6 @@ next-env.d.ts
 # Data Files
 src/lib/allWords.ts
 convex/data/
+
+# Temporary files
+/temp
