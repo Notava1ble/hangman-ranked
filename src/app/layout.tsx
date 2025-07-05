@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 import { ConvexClientProvider } from "@/components/ConvexClientProvider";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +29,11 @@ export default function RootLayout({
   return (
     <ConvexAuthNextjsServerProvider>
       <html lang="en">
+        <Script
+          defer
+          data-domain="hangman-ranked.vercel.app"
+          src="https://plausible.io/js/script.tagged-events.js"
+        />
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased mb-20 r md:mb-0`}
         >
