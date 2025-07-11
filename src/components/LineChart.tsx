@@ -6,6 +6,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { cn } from "@/lib/utils";
 import {
   CartesianGrid,
   Line,
@@ -14,18 +15,23 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { CurveType } from "recharts/types/shape/Curve";
 
 const LineChartComponent = ({
   chartConfig,
   chartData,
+  lineType,
+  className,
 }: {
   chartConfig: ChartConfig;
-  chartData: { game: string; score: number }[];
+  chartData: unknown[] | undefined;
+  lineType?: CurveType;
+  className?: string;
 }) => {
   return (
     <ChartContainer
       config={chartConfig}
-      className="w-full h-48 sm:h-64 md:h-96"
+      className={cn("w-full h-48 md:h-64 lg:h-96", className)}
     >
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
@@ -33,6 +39,7 @@ const LineChartComponent = ({
           data={chartData}
           height={100}
           margin={{
+            top: 6,
             left: 0,
             right: 12,
           }}
@@ -53,13 +60,18 @@ const LineChartComponent = ({
               <ChartTooltipContent hideLabel className="bg-background" />
             }
           />
-          <Line
-            dataKey="score"
-            type="natural"
-            stroke="var(--chart-2)"
-            strokeWidth={2}
-            dot={false}
-          />
+          {Object.keys(chartConfig).map((chart, i) => {
+            return (
+              <Line
+                dataKey={chart}
+                type={lineType}
+                stroke={chartConfig[chart].color}
+                strokeWidth={2}
+                dot={false}
+                key={i}
+              />
+            );
+          })}
         </LineChart>
       </ResponsiveContainer>
     </ChartContainer>

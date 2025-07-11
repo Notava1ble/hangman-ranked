@@ -201,15 +201,67 @@ const Page = () => {
           chartConfig={{
             score: {
               label: "Score",
-              color: "var(--chart-1)",
+              color: "var(--chart-3)",
             },
           }}
           chartData={mockData.charts.scoreOverGames.map((score, game) => ({
             game: game.toString(),
             score,
           }))}
+          lineType="natural"
         />
         <h2 className="mb-4 mt-6 w-full text-center">Scores per Game</h2>
+      </Container>
+      <Container>
+        <Tabs>
+          <TabsList className="w-full">
+            <TabsTrigger value="guesses">Guesses/Mistakes</TabsTrigger>
+            <TabsTrigger value="accuracy">Accuracy</TabsTrigger>
+          </TabsList>
+          <TabsContent value="guesses">
+            <LineChartComponent
+              className="mt-4"
+              chartConfig={{
+                guesses: {
+                  label: "Guesses",
+                  color: "var(--chart-2)",
+                },
+                mistakes: {
+                  label: "Mistake",
+                  color: "var(--chart-1)",
+                },
+              }}
+              chartData={mockData.charts.guessesUsedPerGame.map(
+                (guesses, game) => ({
+                  game: (game + 1).toString(),
+                  guesses,
+                  mistakes: mockData.charts.mistakesPerGame[game],
+                })
+              )}
+            />
+            <h2 className="mb-4 mt-6 w-full text-center">Guesses per Game</h2>
+          </TabsContent>
+          <TabsContent value="accuracy">
+            <LineChartComponent
+              className="mt-4"
+              chartConfig={{
+                accuracy: {
+                  label: "Accuracy",
+                  color: "var(--chart-3)",
+                },
+              }}
+              chartData={mockData.charts.guessAccuracyPerGame.map(
+                (accuracy, game) => ({
+                  game: game.toString(),
+                  accuracy,
+                })
+              )}
+            />
+            <h2 className="mb-4 mt-6 w-full text-center">
+              Guess accuracy per Game
+            </h2>
+          </TabsContent>
+        </Tabs>
       </Container>
     </div>
   );
