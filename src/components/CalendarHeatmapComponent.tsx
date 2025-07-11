@@ -10,8 +10,8 @@ const CalendarHeatmapComponent = ({ values }: { values: valueType[] }) => {
   const lastYear = new Date();
   lastYear.setFullYear(today.getFullYear() - 1);
 
-  const largestCount = Math.max(...values.map((v) => v.count));
-
+  const largestCount =
+    values.length > 0 ? Math.max(...values.map((v) => v.count)) : 1;
   return (
     <CalendarHeatmap
       startDate={lastYear}

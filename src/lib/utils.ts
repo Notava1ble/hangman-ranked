@@ -38,7 +38,7 @@ export function formatDigitalTime(ms: number, includeMs?: boolean) {
 
   let result = `${hours}:${minutes}:${seconds}`;
   if (includeMs) {
-    result += `${milliseconds}`;
+    result += `:${milliseconds.toString().padStart(3, "0")}`;
   }
   return result.trim();
 }
