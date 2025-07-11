@@ -12,7 +12,7 @@ const Container = ({
   return (
     <div
       className={cn(
-        "bg-white p-6 rounded-md drop-shadow-lg w-[95%] sm:w-[85%] md:w-[80%] lg:w-[60%] mx-auto mt-6 transition-all",
+        "bg-white p-6 rounded-md drop-shadow-lg w-[95%] sm:w-[85%] md:w-[80%] lg:w-[70%] mx-auto mt-6 transition-all",
         className
       )}
     >
@@ -32,7 +32,7 @@ export const ContainerSkeleton = ({
   return (
     <div
       className={cn(
-        "flex-center bg-white p-6 rounded-md drop-shadow-lg h-16 w-[95%] sm:w-[85%] md:w-[80%] lg:w-[60%] mx-auto mt-6 transition-all",
+        "flex-center bg-white p-6 rounded-md drop-shadow-lg h-16 w-[95%] sm:w-[85%] md:w-[80%] lg:w-[70%] mx-auto mt-6 transition-all",
         className
       )}
     >

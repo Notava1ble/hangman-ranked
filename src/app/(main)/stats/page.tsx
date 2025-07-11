@@ -213,7 +213,7 @@ const Page = () => {
         <h2 className="mb-4 mt-6 w-full text-center">Scores per Game</h2>
       </Container>
       <Container>
-        <Tabs>
+        <Tabs defaultValue="guesses">
           <TabsList className="w-full">
             <TabsTrigger value="guesses">Guesses/Mistakes</TabsTrigger>
             <TabsTrigger value="accuracy">Accuracy</TabsTrigger>
@@ -235,7 +235,7 @@ const Page = () => {
                 (guesses, game) => ({
                   game: (game + 1).toString(),
                   guesses,
-                  mistakes: mockData.charts.mistakesPerGame[game],
+                  mistakes: mockData.charts.mistakesPerGame[game] ?? 0,
                 })
               )}
             />
