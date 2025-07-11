@@ -3,6 +3,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@source inline("fill-green-{100,{200..900..100},950}");
+
 @theme inline {
   --color-body-background: var(--body-background);
   --color-background: var(--background);
@@ -47,7 +49,7 @@
 :root {
   --radius: 0.625rem;
   --body-background: oklch(97% 0.014 254.604);
-  --background: oklch(1, 0, 0);
+  --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
