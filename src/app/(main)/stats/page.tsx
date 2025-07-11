@@ -1,5 +1,6 @@
 import CalendarHeatmapComponent from "@/components/CalendarHeatmapComponent";
 import Container from "@/components/Container";
+import FrequencyGraph from "@/components/FrequencyGraph";
 import LineChartComponent from "@/components/LineChart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn, formatDigitalTime, toSentenceCase } from "@/lib/utils";
@@ -117,6 +118,8 @@ const mockData = {
     mostCommonlyGuessedCorrectLetter: "i",
   },
 };
+
+type Letter = keyof typeof mockData.charts.letterAppearedFrequency;
 
 const Page = () => {
   // Achievement page and stats page
@@ -262,6 +265,27 @@ const Page = () => {
             </h2>
           </TabsContent>
         </Tabs>
+      </Container>
+      <Container>
+        <FrequencyGraph
+          chartData={(
+            Object.keys(mockData.charts.letterAppearedFrequency) as Letter[]
+          ).map((letter) => ({
+            letter,
+            appeared: mockData.charts.letterAppearedFrequency[letter],
+            guessed: mockData.charts.letterGuessedFrequency[letter],
+          }))}
+          chartConfig={{
+            appeared: {
+              label: "Appeared",
+              color: "var(--ring)",
+            },
+            guessed: {
+              label: "Guessed",
+              color: "var(--chart-green)",
+            },
+          }}
+        />
       </Container>
     </div>
   );

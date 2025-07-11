@@ -12,7 +12,7 @@ const Container = ({
   return (
     <div
       className={cn(
-        "bg-white p-6 rounded-md drop-shadow-lg w-[95%] sm:w-[85%] md:w-[80%] lg:w-[70%] mx-auto mt-6 transition-all",
+        "bg-card p-6 rounded-md drop-shadow-lg w-[95%] sm:w-[85%] md:w-[80%] lg:w-[70%] mx-auto mt-6 transition-all",
         className
       )}
     >
