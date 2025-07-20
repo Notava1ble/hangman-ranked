@@ -44,7 +44,7 @@ const Navbar = () => {
             </div>
           </div>
         </nav>
-        <nav className="fixed bottom-0 py-4 px-4 w-full bg-white/40 backdrop-blur-md border-t-1 rounded-t-md z-100">
+        <nav className="fixed bottom-0 py-4 px-4 w-full bg-card/40 backdrop-blur-md border-t-1 rounded-t-md z-100">
           <div className="flex justify-around items-center">
             <Link href="/" aria-label="Home">
               <Home />
