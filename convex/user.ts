@@ -79,11 +79,13 @@ export const getUserDetailedStats = query({
         ), // In ms (Since the game is won, we know that totalTime is defined)
         maxScore: Math.max(...wonGames.map((game) => game.score || 0)),
         leastMistakes: Math.min(...games.map((game) => game.mistakes || 6)), // 6 is the max mistakes allowed
-        highestAccuracy: Math.max(
-          ...games.map((game) =>
-            game.attempts
-              ? (game.correctGuesses.length / game.attempts) * 100
-              : 0
+        highestAccuracy: Math.round(
+          Math.max(
+            ...games.map((game) =>
+              game.attempts
+                ? (game.correctGuesses.length / game.attempts) * 100
+                : 0
+            )
           )
         ), // Highest % of correct guesses in a game
         mostWinsInADay: (() => {
