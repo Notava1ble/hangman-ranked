@@ -1,11 +1,3 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
-import { words } from "./allWords";
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
 export function formatTime(ms: number) {
   const totalSeconds = Math.floor(ms / 1000);
   const hours = Math.floor(totalSeconds / 3600);
@@ -43,29 +35,6 @@ export function formatDigitalTime(ms: number, includeMs?: boolean) {
   return result.trim();
 }
 
-export const getRandomWord = () => {
-  const filteredWords = words.filter((word) => word.length >= 5);
-  return filteredWords[Math.floor(Math.random() * filteredWords.length)];
-};
-
-export const getDisplayWord = (word: string, guesses: string[]) => {
-  if (!guesses || guesses.length === 0) {
-    return Array(word.length).fill("_") as string[];
-  }
-  return word
-    .split("")
-    .map((letter) => (guesses.includes(letter) ? letter : "_"));
-};
-
-export function toSentenceCase(key: string): string {
-  return key
-    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
-    .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2")
-    .replace(/[_\-]+/g, " ")
-    .toLowerCase()
-    .replace(/^./, (str) => str.toUpperCase());
-}
-
 export function sum(...args: (number | undefined)[]) {
   return args.reduce((acc: number, val) => {
     if (typeof val === "number") {
@@ -73,4 +42,12 @@ export function sum(...args: (number | undefined)[]) {
     }
     return acc;
   }, 0);
+}
+
+export function countLetters(str: string) {
+  const letterCount: Record<string, number> = {};
+  for (const letter of str) {
+    letterCount[letter] = (letterCount[letter] || 0) + 1;
+  }
+  return letterCount;
 }

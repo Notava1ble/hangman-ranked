@@ -1,5 +1,10 @@
 import { api } from "./_generated/api";
-import { mutation, query, QueryCtx } from "./_generated/server";
+import {
+  internalMutation,
+  mutation,
+  query,
+  QueryCtx,
+} from "./_generated/server";
 import { v } from "convex/values";
 import { words } from "./data/allWords";
 import { getAuthUserId } from "@convex-dev/auth/server";
@@ -157,6 +162,10 @@ export const makeGuess = mutation({
       score = baseScore + attemptBonus + mistakeBonus + timeBonus;
     }
 
+    const totalTime = endTime
+      ? Math.floor((endTime - game.startTime) / 1000)
+      : undefined;
+
     await ctx.db.patch(game._id, {
       guessedLetters: newGuessedLetters,
       correctGuesses: newCorrectGuesses,
@@ -166,6 +175,7 @@ export const makeGuess = mutation({
       isCompleted,
       isWon,
       endTime,
+      totalTime,
       score,
     });
 
@@ -176,9 +186,7 @@ export const makeGuess = mutation({
         score,
         attempts: game.attempts + 1,
         mistakes: newMistakes,
-        timeTaken: endTime
-          ? Math.floor((endTime - game.startTime) / 1000)
-          : undefined,
+        timeTaken: totalTime,
       };
     }
     // If game is completed and won, add to leaderboard and update user stats
@@ -187,5 +195,17 @@ export const makeGuess = mutation({
     // if (isCompleted && isWon) {
     //  await ctx.runMutation(api.leaderboard.addEntry ....
     //  await ctx.runMutation(api.users.updateStats ...);
+  },
+});
+
+export const createTotalTime = internalMutation({
+  handler: async (ctx) => {
+    const games = await ctx.db.query("games").collect();
+    for (const game of games) {
+      if (game.startTime && game.endTime) {
+        const totalTime = game.endTime - game.startTime;
+        await ctx.db.patch(game._id, { totalTime });
+      }
+    }
   },
 });

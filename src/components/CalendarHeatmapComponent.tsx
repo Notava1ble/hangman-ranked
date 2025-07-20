@@ -3,7 +3,7 @@
 import CalendarHeatmap from "react-calendar-heatmap";
 import "react-calendar-heatmap/dist/styles.css";
 
-type valueType = { date: Date; count: number };
+type valueType = { date: string; count: number };
 
 const CalendarHeatmapComponent = ({ values }: { values: valueType[] }) => {
   const today = new Date();
