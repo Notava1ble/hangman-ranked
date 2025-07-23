@@ -214,6 +214,9 @@ const Page = () => {
             },
           }}
         />
+        <h2 className="mb-4 mt-6 w-full text-center">
+          Letters appeared-guessed accuracy
+        </h2>
       </Container>
     </div>
   );
