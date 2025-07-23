@@ -70,7 +70,7 @@ const Page = () => {
         <div className="text-center">
           <p className="text-muted-foreground">Time Guessing:</p>
           <span className="text-3xl font-semibold">
-            {formatDigitalTime(mockData.header.timeGuessing)}
+            {formatDigitalTime(mockData.header.timeGuessing, true)}
           </span>
         </div>
       </Container>
@@ -136,7 +136,7 @@ const Page = () => {
             },
           }}
           chartData={mockData.charts.scoreOverGames.map((score, game) => ({
-            game: game.toString(),
+            game: (game + 1).toString(),
             score,
           }))}
           lineType="linear"
