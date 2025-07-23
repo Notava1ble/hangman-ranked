@@ -139,7 +139,7 @@ const Page = () => {
             game: game.toString(),
             score,
           }))}
-          lineType="natural"
+          lineType="linear"
         />
         <h2 className="mb-4 mt-6 w-full text-center">Scores per Game</h2>
       </Container>
