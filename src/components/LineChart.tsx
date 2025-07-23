@@ -39,7 +39,7 @@ const LineChartComponent = ({
           data={chartData}
           height={100}
           margin={{
-            top: 6,
+            top: 12,
             left: 0,
             right: 12,
           }}
