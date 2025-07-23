@@ -162,9 +162,7 @@ export const makeGuess = mutation({
       score = baseScore + attemptBonus + mistakeBonus + timeBonus;
     }
 
-    const totalTime = endTime
-      ? Math.floor((endTime - game.startTime) / 1000)
-      : undefined;
+    const totalTime = endTime ? endTime - game.startTime : undefined;
 
     await ctx.db.patch(game._id, {
       guessedLetters: newGuessedLetters,
