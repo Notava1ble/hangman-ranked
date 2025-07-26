@@ -3,6 +3,7 @@ import { mutation, query, QueryCtx } from "./_generated/server";
 import { getLoggedInUserHelper } from "./auth";
 import { words } from "./data/allWords";
 import { v } from "convex/values";
+import { getEloDelta } from "./lib/utils";
 
 async function getActiveRankedGameHelper(ctx: QueryCtx) {
   const userId = await getAuthUserId(ctx);
@@ -212,7 +213,95 @@ export const getCurrentRankedGameStats = query({
 export const makeGuess = mutation({
   args: { guess: v.string() },
   handler: async (ctx, args) => {
-    throw new Error("makeGuess is not yet implemented");
+    const guess = args.guess.toLowerCase();
+
+    if (guess.length !== 1 || !/^[a-z]$/.test(guess)) {
+      throw new Error("Invalid guess. Please enter a single letter.");
+    }
+    const data = await getActiveRankedGameHelper(ctx);
+    if (!data) {
+      throw new Error("No active game found");
+    }
+    const { activeRankedGame: game, user } = data;
+
+    if (game.isCompleted) {
+      throw new Error("Game is already completed");
+    }
+
+    // Check which user is making the guess
+    const isUser1 = game.userId1 === user._id;
+
+    const opponentId = isUser1 ? game.userId2 : game.userId1;
+    const opponent = await ctx.db.get(opponentId);
+
+    if (!opponent) {
+      throw new Error("Couldn't get opponent data");
+    }
+
+    const guesses = isUser1 ? game.guessedLetters1 : game.guessedLetters2;
+    const correctGuesses = isUser1
+      ? game.correctGuesses1
+      : game.correctGuesses2;
+    const wrongGuesses = isUser1 ? game.wrongGuesses1 : game.wrongGuesses2;
+    const mistakes = isUser1 ? game.mistakes1 : game.mistakes2;
+
+    if (guesses.includes(guess)) {
+      throw new Error("You have already guessed this letter");
+    }
+
+    const newGuessedLetters = [...guesses, guess];
+    const isCorrect = game.word.includes(guess);
+
+    const newCorrectGuesses = correctGuesses;
+    const newWrongGuesses = wrongGuesses;
+    let newMistakes = mistakes;
+
+    if (isCorrect) {
+      newCorrectGuesses.push(guess);
+    } else {
+      newWrongGuesses.push(guess);
+      newMistakes++;
+    }
+
+    // Check if game is won (all letters guessed)
+    const uniqueLetters = [...new Set(game.word.split(""))];
+    const isWon = uniqueLetters.every((l) => newCorrectGuesses.includes(l));
+
+    // Check if game is lost (6 mistakes)
+    const isLost = newMistakes >= 6;
+
+    const isCompleted = isWon || isLost;
+    const endTime = isCompleted ? Date.now() : undefined;
+
+    const totalTime = endTime ? endTime - game.startTime : undefined;
+
+    await ctx.db.patch(game._id, {
+      [isUser1 ? "guessedLetters1" : "guessedLetters2"]: newGuessedLetters,
+      [isUser1 ? "correctGuesses1" : "correctGuesses2"]: newCorrectGuesses,
+      [isUser1 ? "wrongGuesses1" : "wrongGuesses2"]: newWrongGuesses,
+      [isUser1 ? "attempts1" : "attempts2"]:
+        (isUser1 ? game.attempts1 : game.attempts2) + 1,
+      [isUser1 ? "mistakes1" : "mistakes2"]: newMistakes,
+      isCompleted,
+      endTime,
+      totalTime,
+      winner: isCompleted ? (isWon ? user._id : opponentId) : undefined,
+    });
+
+    if (isCompleted) {
+      const eloChange = isWon
+        ? getEloDelta(user.elo, opponent.elo, true)
+        : getEloDelta(user.elo, opponent.elo, false);
+      ctx.db.patch(user._id, { elo: user.elo + eloChange });
+      ctx.db.patch(opponent._id, { elo: user.elo - eloChange });
+
+      return {
+        isCompleted,
+        isWon,
+        attempts: isUser1 ? game.attempts1 + 1 : game.attempts2 + 1,
+        mistakes: newMistakes,
+        timeTaken: totalTime,
+      };
+    }
   },
-  // Temporary function
 });

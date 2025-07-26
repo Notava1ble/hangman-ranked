@@ -51,3 +51,14 @@ export function countLetters(str: string) {
   }
   return letterCount;
 }
+
+export function getEloDelta(
+  ratingA: number,
+  ratingB: number,
+  didAWin: boolean,
+  kFactor: number = 32
+): number {
+  const expectedA = 1 / (1 + Math.pow(10, (ratingB - ratingA) / 400));
+  const actualA = didAWin ? 1 : 0;
+  return Math.round(kFactor * (actualA - expectedA));
+}
