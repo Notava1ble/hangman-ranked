@@ -8,10 +8,12 @@ import { useCallback, useEffect, useRef } from "react";
 import HangmanFigure from "./HangmanFigure";
 import { MistakeAttemptCard } from "./SoloGame";
 import Keyboard from "./Keyboard";
+import Timer from "./Timer";
 
 const RankedGame = () => {
   const startButtonRef = useRef<HTMLButtonElement>(null);
 
+  const queueInfo = useQuery(api.ranked.queueInfo);
   const displayWord = useQuery(api.ranked.getDisplayWord);
   const currentRankedGameStats = useQuery(api.ranked.getCurrentRankedGameStats);
 
@@ -39,7 +41,7 @@ const RankedGame = () => {
   }, [isGameActive]);
 
   // Work on displaying to the ui when the user is in matchmaking
-  if (!isGameActive) {
+  if (!isGameActive && !queueInfo?.isInQueue) {
     return (
       <Container className="flex-center">
         <Button
@@ -54,6 +56,16 @@ const RankedGame = () => {
       </Container>
     );
   }
+
+  if (queueInfo?.isInQueue) {
+    return (
+      <Container>
+        {/* We know that queueEmtryTime is defiened as isInQueue is true */}
+        <Timer startTime={new Date(queueInfo.queueEntryTime!)} />
+      </Container>
+    );
+  }
+
   return (
     <div>
       <Container className="flex-center space-x-4">
@@ -74,7 +86,7 @@ const RankedGame = () => {
             />
           </div>
           <h2 className="text-3xl text-blue-700 font-bold font-mono text-center">
-            {displayWord.join(" ")}
+            {displayWord!.join(" ")}
           </h2>
           <Keyboard
             correctGuesses={currentRankedGameStats?.correctGuesses}

@@ -96,6 +96,29 @@ export const enterMatchmaking = mutation({
   },
 });
 
+export const queueInfo = query({
+  handler: async (ctx) => {
+    const user = await getLoggedInUserHelper(ctx);
+    if (!user) {
+      throw new Error("User not Authenticated");
+    }
+
+    const userEntryInQueue = await ctx.db
+      .query("matchQueue")
+      .filter((q) => q.eq(q.field("userId"), user._id))
+      .first();
+
+    if (!userEntryInQueue) {
+      return { isInQueue: false, queueEntryTime: undefined };
+    }
+
+    return {
+      isInQueue: true,
+      queueEntryTime: userEntryInQueue._creationTime,
+    };
+  },
+});
+
 export const getDisplayWord = query({
   handler: async (ctx) => {
     const data = await getActiveRankedGameHelper(ctx);
