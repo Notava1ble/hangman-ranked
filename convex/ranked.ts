@@ -126,7 +126,7 @@ export const getCurrentRankedGameStats = query({
     const data = await getActiveRankedGameHelper(ctx);
     if (!data) {
       return {
-        opponentData: { name: "Unknown", elo: "1200" },
+        opponentData: { name: "Unknown", elo: 1200 },
         guesses: [],
         correctGuesses: [],
         mistakes: 0,
@@ -173,7 +173,7 @@ export const getCurrentRankedGameStats = query({
     return {
       opponentData: opponent
         ? { name: opponent.name, elo: opponent.elo }
-        : { name: "Unknown", elo: "1200" },
+        : { name: "Unknown", elo: 1200 },
       guesses,
       correctGuesses,
       mistakes,
@@ -188,6 +188,8 @@ export const getCurrentRankedGameStats = query({
 
 export const makeGuess = mutation({
   args: { guess: v.string() },
-  handler: async (ctx, args) => {},
+  handler: async (ctx, args) => {
+    throw new Error("makeGuess is not yet implemented");
+  },
   // Temporary function
 });
