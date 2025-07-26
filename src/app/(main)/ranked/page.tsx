@@ -1,5 +1,4 @@
-import Container from "@/components/Container";
-import { Button } from "@/components/ui/button";
+import RankedGame from "@/components/RankedGame";
 
 const Page = () => {
   return (
@@ -10,11 +9,7 @@ const Page = () => {
           Challenge other people
         </h1>
       </div>
-      <Container className="flex-center">
-        <Button className="text-lg" size="lg" variant="primary">
-          Ranked
-        </Button>
-      </Container>
+      <RankedGame />
     </div>
   );
 };

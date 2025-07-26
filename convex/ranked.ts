@@ -2,6 +2,7 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 import { mutation, query, QueryCtx } from "./_generated/server";
 import { getLoggedInUserHelper } from "./auth";
 import { words } from "./data/allWords";
+import { v } from "convex/values";
 
 async function getActiveRankedGameHelper(ctx: QueryCtx) {
   const userId = await getAuthUserId(ctx);
@@ -118,4 +119,75 @@ export const getDisplayWord = query({
       .map((letter) => (guesses.includes(letter) ? letter : "_"));
     return displayWord;
   },
+});
+
+export const getCurrentRankedGameStats = query({
+  handler: async (ctx) => {
+    const data = await getActiveRankedGameHelper(ctx);
+    if (!data) {
+      return {
+        opponentData: { name: "Unknown", elo: "1200" },
+        guesses: [],
+        correctGuesses: [],
+        mistakes: 0,
+        attempts: 0,
+        opponentGuesses: [],
+        opponentCorrectGuesses: [],
+        opponentMistakes: 0,
+        opponentAttempts: 0,
+      };
+    }
+    const { activeRankedGame, user } = data;
+    const isUser1 = activeRankedGame.userId1 === user._id;
+
+    const guesses = isUser1
+      ? activeRankedGame.guessedLetters1
+      : activeRankedGame.guessedLetters2;
+    const correctGuesses = isUser1
+      ? activeRankedGame.correctGuesses1
+      : activeRankedGame.correctGuesses2;
+    const mistakes = isUser1
+      ? activeRankedGame.mistakes1
+      : activeRankedGame.mistakes2;
+    const attempts = isUser1
+      ? activeRankedGame.attempts1
+      : activeRankedGame.attempts2;
+
+    const opponentGuesses = !isUser1
+      ? activeRankedGame.guessedLetters1
+      : activeRankedGame.guessedLetters2;
+    const opponentCorrectGuesses = !isUser1
+      ? activeRankedGame.correctGuesses1
+      : activeRankedGame.correctGuesses2;
+    const opponentMistakes = !isUser1
+      ? activeRankedGame.mistakes1
+      : activeRankedGame.mistakes2;
+    const opponentAttempts = !isUser1
+      ? activeRankedGame.attempts1
+      : activeRankedGame.attempts2;
+
+    const opponent = await ctx.db.get(
+      isUser1 ? activeRankedGame.userId2 : activeRankedGame.userId1
+    );
+
+    return {
+      opponentData: opponent
+        ? { name: opponent.name, elo: opponent.elo }
+        : { name: "Unknown", elo: "1200" },
+      guesses,
+      correctGuesses,
+      mistakes,
+      attempts,
+      opponentGuesses,
+      opponentCorrectGuesses,
+      opponentMistakes,
+      opponentAttempts,
+    };
+  },
+});
+
+export const makeGuess = mutation({
+  args: { guess: v.string() },
+  handler: async (ctx, args) => {},
+  // Temporary function
 });
