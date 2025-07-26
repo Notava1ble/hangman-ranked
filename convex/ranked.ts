@@ -198,7 +198,7 @@ export const getCurrentRankedGameStats = query({
     return {
       opponentData: {
         name: activeRankedGame[isUser1 ? "userName2" : "userName1"],
-        elo: activeRankedGame[isUser1 ? "userElo1" : "userElo2"],
+        elo: activeRankedGame[isUser1 ? "userElo2" : "userElo1"],
       },
       guesses,
       correctGuesses,
@@ -234,8 +234,7 @@ export const makeGuess = mutation({
     const isUser1 = game.userId1 === user._id;
 
     const opponentId = isUser1 ? game.userId2 : game.userId1;
-    const opponentName = isUser1 ? game.userName2 : game.userName2;
-
+    const opponentName = isUser1 ? game.userName2 : game.userName1;
     const guesses = isUser1 ? game.guessedLetters1 : game.guessedLetters2;
     const correctGuesses = isUser1
       ? game.correctGuesses1
@@ -288,7 +287,7 @@ export const makeGuess = mutation({
     });
 
     if (isCompleted) {
-      const opponentElo = game[isUser1 ? "userElo1" : "userElo2"];
+      const opponentElo = game[isUser1 ? "userElo2" : "userElo1"];
       const eloChange = isWon
         ? getEloDelta(user.elo, opponentElo, true)
         : getEloDelta(user.elo, opponentElo, false);
@@ -297,7 +296,6 @@ export const makeGuess = mutation({
         ctx.db.patch(opponentId, { elo: opponentElo - eloChange }),
         ctx.db.patch(game._id, { eloChange }),
       ]);
-
       return {
         isCompleted,
         isWon,

@@ -30,6 +30,7 @@ export default defineSchema({
   rankedMatches: defineTable({
     userId1: v.id("users"),
     userId2: v.id("users"),
+    // TODO: If user changes the name, the data will become stale
     userName1: v.string(),
     userName2: v.string(),
     userElo1: v.number(),
