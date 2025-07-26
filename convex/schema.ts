@@ -24,8 +24,8 @@ export default defineSchema({
     .index("total_time", ["totalTime"]),
   matchQueue: defineTable({
     userId: v.id("users"),
-    userElo: v.id("users"),
-  }),
+    userElo: v.number(),
+  }).index("by_elo", ["userElo"]),
   rankedMatches: defineTable({
     userId1: v.id("users"),
     userId2: v.id("users"),
@@ -45,7 +45,11 @@ export default defineSchema({
     totalTime: v.optional(v.number()),
     isCompleted: v.boolean(),
     winner: v.optional(v.id("users")),
-  }),
+  })
+    .index("by_user1", ["userId1"])
+    .index("by_user2", ["userId2"])
+    .index("by_completion", ["isCompleted"])
+    .index("by_total_time", ["totalTime"]),
   ...authTables,
   users: defineTable({
     elo: v.number(),
@@ -58,5 +62,6 @@ export default defineSchema({
     phoneVerificationTime: v.optional(v.float64()),
   })
     .index("phone", ["phone"])
-    .index("email", ["email"]),
+    .index("email", ["email"])
+    .index("by_elo", ["elo"]),
 });

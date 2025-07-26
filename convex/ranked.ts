@@ -1,6 +1,38 @@
-import { mutation } from "./_generated/server";
+import { getAuthUserId } from "@convex-dev/auth/server";
+import { mutation, query, QueryCtx } from "./_generated/server";
 import { getLoggedInUserHelper } from "./auth";
 import { words } from "./data/allWords";
+
+async function getActiveRankedGameHelper(ctx: QueryCtx) {
+  const userId = await getAuthUserId(ctx);
+  if (!userId) {
+    return null;
+  }
+
+  const user = await ctx.db.get(userId);
+  if (!user) {
+    return null;
+  }
+
+  const activeRankedGame = await ctx.db
+    .query("rankedMatches")
+    .withIndex("by_completion", (q) => q.eq("isCompleted", false))
+    .filter((q) =>
+      q.or(
+        q.eq(q.field("userId1"), user._id),
+        q.eq(q.field("userId2"), user._id)
+      )
+    )
+    .first();
+
+  if (!activeRankedGame) {
+    return null;
+  }
+  return {
+    activeRankedGame,
+    user,
+  };
+}
 
 export const enterMatchmaking = mutation({
   handler: async (ctx) => {
@@ -25,12 +57,23 @@ export const enterMatchmaking = mutation({
       (entry) => entry.userId !== user._id
     );
 
+    if (potentialOpponents.length === 0) {
+      // Queue the user for matchmaking instead of creating a match
+      await ctx.db.insert("matchQueue", {
+        userId: user._id,
+        userElo: user.elo,
+      });
+      return { status: "queued", message: "Added to matchmaking queue" };
+    }
+
     const opponent =
       potentialOpponents[Math.floor(Math.random() * potentialOpponents.length)];
 
     const filteredWords = words.filter((word) => word.length >= 5);
     const word =
       filteredWords[Math.floor(Math.random() * filteredWords.length)];
+
+    await ctx.db.delete(opponent._id);
 
     await ctx.db.insert("rankedMatches", {
       userId1: user._id,
@@ -49,5 +92,30 @@ export const enterMatchmaking = mutation({
       startTime: Date.now(),
       isCompleted: false,
     });
+  },
+});
+
+export const getDisplayWord = query({
+  handler: async (ctx) => {
+    const data = await getActiveRankedGameHelper(ctx);
+    if (!data) {
+      return null;
+    }
+
+    const { activeRankedGame, user } = data;
+
+    const word = activeRankedGame.word;
+    const guesses =
+      activeRankedGame.userId1 === user._id
+        ? activeRankedGame.guessedLetters1
+        : activeRankedGame.guessedLetters2;
+
+    if (!guesses || guesses.length === 0) {
+      return Array(word.length).fill("_") as string[];
+    }
+    const displayWord = word
+      .split("")
+      .map((letter) => (guesses.includes(letter) ? letter : "_"));
+    return displayWord;
   },
 });

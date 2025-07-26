@@ -7,7 +7,7 @@ const Page = () => {
     <div className="w-full h-full">
       <div className="w-full flex-center pt-8 md:pt-16">
         <h1 className="text-3xl md:text-4xl font-semibold">
-          Challange other people
+          Challenge other people
         </h1>
       </div>
       <Container className="flex-center">
