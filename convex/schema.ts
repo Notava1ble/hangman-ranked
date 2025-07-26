@@ -24,11 +24,17 @@ export default defineSchema({
     .index("total_time", ["totalTime"]),
   matchQueue: defineTable({
     userId: v.id("users"),
+    userName: v.string(),
     userElo: v.number(),
   }).index("by_elo", ["userElo"]),
   rankedMatches: defineTable({
     userId1: v.id("users"),
     userId2: v.id("users"),
+    userName1: v.string(),
+    userName2: v.string(),
+    userElo1: v.number(),
+    userElo2: v.number(),
+    eloChange: v.optional(v.number()),
     word: v.string(),
     guessedLetters1: v.array(v.string()),
     guessedLetters2: v.array(v.string()),
@@ -44,7 +50,8 @@ export default defineSchema({
     endTime: v.optional(v.number()),
     totalTime: v.optional(v.number()),
     isCompleted: v.boolean(),
-    winner: v.optional(v.id("users")),
+    winner: v.optional(v.string()),
+    winnerId: v.optional(v.id("users")),
   })
     .index("by_user1", ["userId1"])
     .index("by_user2", ["userId2"])

@@ -63,6 +63,7 @@ export const enterMatchmaking = mutation({
       // Queue the user for matchmaking instead of creating a match
       await ctx.db.insert("matchQueue", {
         userId: user._id,
+        userName: user.name || "Unknown",
         userElo: user.elo,
       });
       return { status: "queued", message: "Added to matchmaking queue" };
@@ -78,8 +79,12 @@ export const enterMatchmaking = mutation({
     await ctx.db.delete(opponent._id);
 
     await ctx.db.insert("rankedMatches", {
+      userName1: user.name || "Unknown",
+      userName2: opponent.userName,
       userId1: user._id,
       userId2: opponent.userId,
+      userElo1: user.elo,
+      userElo2: opponent.userElo,
       word: word,
       guessedLetters1: [],
       guessedLetters2: [],
@@ -190,14 +195,11 @@ export const getCurrentRankedGameStats = query({
       ? activeRankedGame.attempts1
       : activeRankedGame.attempts2;
 
-    const opponent = await ctx.db.get(
-      isUser1 ? activeRankedGame.userId2 : activeRankedGame.userId1
-    );
-
     return {
-      opponentData: opponent
-        ? { name: opponent.name, elo: opponent.elo }
-        : { name: "Unknown", elo: 1200 },
+      opponentData: {
+        name: activeRankedGame[isUser1 ? "userName2" : "userName1"],
+        elo: activeRankedGame[isUser1 ? "userElo1" : "userElo2"],
+      },
       guesses,
       correctGuesses,
       mistakes,
@@ -232,11 +234,7 @@ export const makeGuess = mutation({
     const isUser1 = game.userId1 === user._id;
 
     const opponentId = isUser1 ? game.userId2 : game.userId1;
-    const opponent = await ctx.db.get(opponentId);
-
-    if (!opponent) {
-      throw new Error("Couldn't get opponent data");
-    }
+    const opponentName = isUser1 ? game.userName2 : game.userName2;
 
     const guesses = isUser1 ? game.guessedLetters1 : game.guessedLetters2;
     const correctGuesses = isUser1
@@ -285,15 +283,20 @@ export const makeGuess = mutation({
       isCompleted,
       endTime,
       totalTime,
-      winner: isCompleted ? (isWon ? user._id : opponentId) : undefined,
+      winner: isCompleted ? (isWon ? user.name : opponentName) : undefined,
+      winnerId: isCompleted ? (isWon ? user._id : opponentId) : undefined,
     });
 
     if (isCompleted) {
+      const opponentElo = game[isUser1 ? "userElo1" : "userElo2"];
       const eloChange = isWon
-        ? getEloDelta(user.elo, opponent.elo, true)
-        : getEloDelta(user.elo, opponent.elo, false);
-      ctx.db.patch(user._id, { elo: user.elo + eloChange });
-      ctx.db.patch(opponent._id, { elo: user.elo - eloChange });
+        ? getEloDelta(user.elo, opponentElo, true)
+        : getEloDelta(user.elo, opponentElo, false);
+      await Promise.all([
+        ctx.db.patch(user._id, { elo: user.elo + eloChange }),
+        ctx.db.patch(opponentId, { elo: opponentElo - eloChange }),
+        ctx.db.patch(game._id, { eloChange }),
+      ]);
 
       return {
         isCompleted,

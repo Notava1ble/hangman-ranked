@@ -2,7 +2,7 @@ import { fetchQuery, preloadQuery } from "convex/nextjs";
 import { api } from "../../../convex/_generated/api";
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
 import UserStats from "./UserStats";
-import RecentSoloGames from "@/components/RecentSoloGames";
+import { RecentSoloGames } from "@/components/RecentGames";
 import { Preloaded } from "convex/react";
 import SoloGame from "@/components/SoloGame";
 import ClientSoloGame from "@/components/ClientSoloGame";

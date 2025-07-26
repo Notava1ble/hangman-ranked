@@ -1,8 +1,10 @@
 import RankedGame from "@/components/RankedGame";
-import { fetchQuery } from "convex/nextjs";
+import { fetchQuery, preloadQuery } from "convex/nextjs";
 import { api } from "../../../../convex/_generated/api";
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
 import Container from "@/components/Container";
+import { Preloaded } from "convex/react";
+import { RecentRankedGames } from "@/components/RecentGames";
 
 const Page = async () => {
   const token = await convexAuthNextjsToken();
@@ -10,6 +12,18 @@ const Page = async () => {
   const user = await fetchQuery(api.auth.loggedInUser, {}, { token }).catch(
     () => null
   );
+  let preloadedRecentGames: Preloaded<
+    typeof api.user.getRecentRankedGames
+  > | null = null;
+
+  if (user) {
+    preloadedRecentGames = await preloadQuery(
+      api.user.getRecentRankedGames,
+      {},
+      { token }
+    ).catch(() => null);
+  }
+
   return (
     // Start Ranked
     <div className="w-full h-full">
@@ -27,6 +41,9 @@ const Page = async () => {
             challenge
           </p>
         </Container>
+      )}
+      {preloadedRecentGames && (
+        <RecentRankedGames preloadedRecentGames={preloadedRecentGames} />
       )}
     </div>
   );

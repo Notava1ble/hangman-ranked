@@ -192,3 +192,49 @@ export const backfillElo = internalMutation({
     }
   },
 });
+
+export const getRecentRankedGames = query({
+  handler: async (ctx) => {
+    const user = await getLoggedInUserHelper(ctx);
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+
+    // Fetch completed matches where the user is userId1
+    const matches1 = await ctx.db
+      .query("rankedMatches")
+      .withIndex("by_user1", (q) => q.eq("userId1", user._id))
+      .filter((q) => q.eq(q.field("isCompleted"), true))
+      .order("desc")
+      .collect();
+
+    const matches2 = await ctx.db
+      .query("rankedMatches")
+      .withIndex("by_user2", (q) => q.eq("userId2", user._id))
+      .filter((q) => q.eq(q.field("isCompleted"), true))
+      .order("desc")
+      .collect();
+
+    // Merge and find the most recent one based on endTime
+    const allMatches = [...matches1, ...matches2];
+    const mostRecent = allMatches
+      .filter((m) => m.endTime !== undefined)
+      .sort((a, b) => (b.endTime ?? 0) - (a.endTime ?? 0))
+      .slice(0, 5);
+
+    return mostRecent.map((match) => {
+      const isUser1 = match.userId1 === user._id;
+      const opponent = isUser1 ? match.userName2 : match.userName1;
+
+      return {
+        _id: match._id,
+        opponent,
+        word: match.word,
+        mistakes: isUser1 ? match.mistakes1 : match.mistakes2,
+        attempts: isUser1 ? match.attempts1 : match.attempts2,
+        winner: match.winner,
+        eloChange: match.eloChange,
+      };
+    });
+  },
+});
