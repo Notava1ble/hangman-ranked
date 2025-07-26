@@ -1,5 +1,5 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { query } from "./_generated/server";
+import { internalMutation, query } from "./_generated/server";
 import { getLoggedInUserHelper } from "./auth";
 import { sum, countLetters, formatDigitalTime } from "./lib/utils";
 
@@ -179,5 +179,16 @@ export const getUserDetailedStats = query({
         mostCommonlyGuessedCorrectLetter: "i",
       },
     };
+  },
+});
+
+export const backfillElo = internalMutation({
+  handler: async (ctx) => {
+    const users = await ctx.db.query("users").collect();
+    for (const user of users) {
+      if (!user.elo) {
+        await ctx.db.patch(user._id, { elo: 1200 }); // Default Elo rating
+      }
+    }
   },
 });

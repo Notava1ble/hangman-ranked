@@ -1,7 +1,20 @@
+import Container from "@/components/Container";
+import { Button } from "@/components/ui/button";
+
 const Page = () => {
   return (
-    <div className="flex-center mt-4">
-      This page is still under construction
+    // Start Ranked
+    <div className="w-full h-full">
+      <div className="w-full flex-center pt-8 md:pt-16">
+        <h1 className="text-3xl md:text-4xl font-semibold">
+          Challange other people
+        </h1>
+      </div>
+      <Container className="flex-center">
+        <Button className="text-lg" size="lg" variant="primary">
+          Ranked
+        </Button>
+      </Container>
     </div>
   );
 };

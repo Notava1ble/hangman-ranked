@@ -19,6 +19,7 @@ import type * as game from "../game.js";
 import type * as http from "../http.js";
 import type * as leaderboard from "../leaderboard.js";
 import type * as lib_utils from "../lib/utils.js";
+import type * as ranked from "../ranked.js";
 import type * as user from "../user.js";
 
 /**
@@ -36,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   leaderboard: typeof leaderboard;
   "lib/utils": typeof lib_utils;
+  ranked: typeof ranked;
   user: typeof user;
 }>;
 export declare const api: FilterApi<
