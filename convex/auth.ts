@@ -6,14 +6,38 @@ import { MutationCtx, query, QueryCtx } from "./_generated/server";
 export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
   providers: [GitHub, Google],
   callbacks: {
+    /**
+     * Fully replace Convex Auth’s default upsert logic.
+     * Must return either an existing user ID or the newly inserted one.
+     */
     async createOrUpdateUser(ctx: MutationCtx, args) {
       if (args.existingUserId) {
         return args.existingUserId;
       }
-      return ctx.db.insert("users", {
-        ...args,
+
+      const email = args.profile.email;
+      const phone = args.profile.phone;
+
+      // const emailVerificationTime =
+      //   args.profile.emailVerified === true ? Date.now() : undefined;
+      // const phoneVerificationTime =
+      //   args.profile.phoneVerified === true ? Date.now() : undefined;
+
+      const name = (args.profile.name as string | undefined) ?? undefined;
+      const image =
+        (args.profile.image as string | undefined) ??
+        (args.profile.picture as string | undefined) ??
+        undefined;
+
+      const userId = await ctx.db.insert("users", {
+        email,
+        phone,
+        name,
+        image,
         elo: 1200,
       });
+
+      return userId;
     },
   },
 });
