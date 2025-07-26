@@ -35,6 +35,20 @@ const RankedGame = () => {
   );
 
   useEffect(() => {
+    const handleKeyPressEvent = (event: KeyboardEvent) => {
+      const key = event.key.toLowerCase();
+      if (/^[a-z]$/.test(key)) {
+        onKeyPress(key);
+      }
+    };
+    window.addEventListener("keypress", handleKeyPressEvent);
+
+    return () => {
+      window.removeEventListener("keypress", handleKeyPressEvent);
+    };
+  }, [onKeyPress]);
+
+  useEffect(() => {
     if (!isGameActive) {
       startButtonRef.current?.focus();
     }
