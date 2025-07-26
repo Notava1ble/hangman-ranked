@@ -100,7 +100,7 @@ export const queueInfo = query({
   handler: async (ctx) => {
     const user = await getLoggedInUserHelper(ctx);
     if (!user) {
-      throw new Error("User not Authenticated");
+      throw new Error("User not authenticated");
     }
 
     const userEntryInQueue = await ctx.db

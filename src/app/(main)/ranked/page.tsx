@@ -7,8 +7,9 @@ import Container from "@/components/Container";
 const Page = async () => {
   const token = await convexAuthNextjsToken();
 
-  const user = await fetchQuery(api.auth.loggedInUser, {}, { token });
-
+  const user = await fetchQuery(api.auth.loggedInUser, {}, { token }).catch(
+    () => null
+  );
   return (
     // Start Ranked
     <div className="w-full h-full">
