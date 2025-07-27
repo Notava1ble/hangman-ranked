@@ -81,8 +81,15 @@ const RankedGame = () => {
   }
 
   return (
-    <div>
-      <Container className="flex-center space-x-4">
+    <Container>
+      <div className="mx-auto w-fit mb-2">
+        <span className="text-muted-foreground">Opponent: </span>
+        <span className="text-2xl font-semibold">
+          {currentRankedGameStats?.opponentData.name} (
+          {currentRankedGameStats?.opponentData.elo})
+        </span>
+      </div>
+      <div className="flex-center space-x-4">
         <div className="w-2/5 h-full mb-4 hidden md:block">
           <HangmanFigure wrongGuesses={currentRankedGameStats?.mistakes} />
         </div>
@@ -109,15 +116,8 @@ const RankedGame = () => {
             onKeyPress={onKeyPress}
           />
         </div>
-      </Container>
-      <div className="mx-auto w-fit mt-6">
-        <span className="text-muted-foreground">Opponent: </span>
-        <span className="text-2xl font-semibold">
-          {currentRankedGameStats?.opponentData.name} (
-          {currentRankedGameStats?.opponentData.elo})
-        </span>
       </div>
-    </div>
+    </Container>
   );
 };
 export default RankedGame;
