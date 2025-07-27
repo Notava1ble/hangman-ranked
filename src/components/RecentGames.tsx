@@ -97,7 +97,8 @@ export const RecentRankedGames = ({
                 key={game._id}
                 className={`
                   ${
-                    game.winner !== game.opponent
+                    // Fix bug that occurs when the names are equal for two different users
+                    game.hasUserWon
                       ? "bg-green-100 hover:bg-green-200"
                       : "bg-red-100 hover:bg-red-200"
                   }
@@ -105,7 +106,13 @@ export const RecentRankedGames = ({
               >
                 <TableCell className="pl-6">{game.word}</TableCell>
                 <TableCell className="text-right">{game.opponent}</TableCell>
-                <TableCell className="text-right">{game.eloChange}</TableCell>
+                <TableCell className="text-right">
+                  {game.eloChange
+                    ? game.eloChange > 0
+                      ? `+${game.eloChange}`
+                      : game.eloChange
+                    : 0}
+                </TableCell>
                 <TableCell className="text-right">{game.mistakes}</TableCell>
                 <TableCell className="text-right">{game.attempts}</TableCell>
                 <TableCell className="pr-6 text-right">{game.winner}</TableCell>

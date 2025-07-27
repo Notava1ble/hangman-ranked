@@ -289,8 +289,16 @@ export const makeGuess = mutation({
     if (isCompleted) {
       const opponentElo = game[isUser1 ? "userElo2" : "userElo1"];
       const eloChange = isWon
-        ? getEloDelta(user.elo, opponentElo, true)
-        : getEloDelta(user.elo, opponentElo, false);
+        ? getEloDelta(
+            isUser1 ? user.elo : opponentElo,
+            isUser1 ? opponentElo : user.elo,
+            isUser1
+          )
+        : getEloDelta(
+            isUser1 ? user.elo : opponentElo,
+            isUser1 ? opponentElo : user.elo,
+            !isUser1
+          );
       await Promise.all([
         ctx.db.patch(user._id, { elo: user.elo + eloChange }),
         ctx.db.patch(opponentId, { elo: opponentElo - eloChange }),

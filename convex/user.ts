@@ -233,7 +233,9 @@ export const getRecentRankedGames = query({
         mistakes: isUser1 ? match.mistakes1 : match.mistakes2,
         attempts: isUser1 ? match.attempts1 : match.attempts2,
         winner: match.winner,
-        eloChange: match.eloChange,
+        eloChange: isUser1 ? match.eloChange : -(match.eloChange ?? 0),
+        hasUserWon:
+          match.winnerId === (isUser1 ? match.userId1 : match.userId2),
       };
     });
   },
