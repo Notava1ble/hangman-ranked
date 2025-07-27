@@ -300,8 +300,12 @@ export const makeGuess = mutation({
             !isUser1
           );
       await Promise.all([
-        ctx.db.patch(user._id, { elo: user.elo + eloChange }),
-        ctx.db.patch(opponentId, { elo: opponentElo - eloChange }),
+        ctx.db.patch(user._id, {
+          elo: isUser1 ? user.elo + eloChange : user.elo - eloChange,
+        }),
+        ctx.db.patch(opponentId, {
+          elo: isUser1 ? opponentElo - eloChange : opponentElo + eloChange,
+        }),
         ctx.db.patch(game._id, { eloChange }),
       ]);
       return {

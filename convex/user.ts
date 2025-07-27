@@ -219,8 +219,7 @@ export const getRecentRankedGames = query({
     const allMatches = [...matches1, ...matches2];
     const mostRecent = allMatches
       .filter((m) => m.endTime !== undefined)
-      .sort((a, b) => (b.endTime ?? 0) - (a.endTime ?? 0))
-      .slice(0, 5);
+      .sort((a, b) => (b.endTime ?? 0) - (a.endTime ?? 0));
 
     return mostRecent.map((match) => {
       const isUser1 = match.userId1 === user._id;
