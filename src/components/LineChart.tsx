@@ -16,17 +16,25 @@ import {
   YAxis,
 } from "recharts";
 import { CurveType } from "recharts/types/shape/Curve";
+import { AxisDomain } from "recharts/types/util/types";
 
 const LineChartComponent = ({
   chartConfig,
   chartData,
   lineType,
   className,
+  yDomain,
+  yPadding,
 }: {
   chartConfig: ChartConfig;
   chartData: unknown[] | undefined;
   lineType?: CurveType;
   className?: string;
+  yDomain?: AxisDomain;
+  yPadding?: {
+    top?: number;
+    bottom?: number;
+  };
 }) => {
   return (
     <ChartContainer
@@ -52,7 +60,13 @@ const LineChartComponent = ({
             tickMargin={8}
             tickFormatter={(value) => value.slice(0, 3)}
           />
-          <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+          <YAxis
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+            domain={yDomain}
+            padding={yPadding}
+          />
 
           <ChartTooltip
             cursor={false}
