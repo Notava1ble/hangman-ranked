@@ -89,11 +89,6 @@ export const RecentRankedGames = ({
       }),
   ];
 
-  // console.log(
-  //   eloProgression,
-  //   recentGames.map(({ eloChange }) => eloChange)
-  // );
-
   return (
     <>
       <Container>
