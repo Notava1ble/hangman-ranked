@@ -14,12 +14,16 @@ export default defineSchema({
     startTime: v.number(),
     endTime: v.optional(v.number()),
     totalTime: v.optional(v.number()),
+    lastUpdate: v.number(),
     isCompleted: v.boolean(),
     isWon: v.boolean(),
+    isAbandoned: v.boolean(),
     score: v.optional(v.number()),
+    timeoutScheduleId: v.optional(v.id("_scheduled_functions")),
   })
     .index("by_user", ["userId"])
     .index("by_completion", ["isCompleted"])
+    .index("by_isAbandoned", ["isAbandoned"])
     .index("score", ["score"])
     .index("total_time", ["totalTime"]),
   matchQueue: defineTable({

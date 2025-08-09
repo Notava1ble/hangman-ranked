@@ -59,7 +59,7 @@ export const RecentSoloGames = ({
                 <TableCell className="text-right">{game.mistakes}</TableCell>
                 <TableCell className="text-right">{game.attempts}</TableCell>
                 <TableCell className="pr-6 text-right">
-                  {game.isWon ? "Won" : "Loss"}
+                  {game.isAbandoned ? "Abandoned" : game.isWon ? "Won" : "Loss"}
                 </TableCell>
               </TableRow>
             );

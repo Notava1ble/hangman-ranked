@@ -1,4 +1,4 @@
-import { api } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 import {
   internalMutation,
   mutation,
@@ -46,7 +46,8 @@ export const createGame = mutation({
     if (currentGames.length > 0) {
       await ctx.db.patch(currentGames[0]._id, { word });
     } else {
-      await ctx.db.insert("games", {
+      const now = Date.now();
+      const gameId = await ctx.db.insert("games", {
         userId: user._id,
         word: word.toLowerCase(),
         guessedLetters: [],
@@ -54,10 +55,21 @@ export const createGame = mutation({
         wrongGuesses: [],
         attempts: 0,
         mistakes: 0,
-        startTime: Date.now(),
+        startTime: now,
+        lastUpdate: now,
+        isAbandoned: false,
         isCompleted: false,
         isWon: false,
       });
+      const schedulerId = await ctx.scheduler.runAfter(
+        60 * 1000,
+        internal.game.timeoutSchedule,
+        {
+          gameId,
+          lastUpdate: now,
+        }
+      );
+      await ctx.db.patch(gameId, { timeoutScheduleId: schedulerId });
     }
   },
 });
@@ -148,7 +160,9 @@ export const makeGuess = mutation({
     const isLost = newMistakes >= 6;
 
     const isCompleted = isWon || isLost;
-    const endTime = isCompleted ? Date.now() : undefined;
+
+    const now = Date.now();
+    const endTime = isCompleted ? now : undefined;
 
     let score = 0;
     if (isCompleted && isWon) {
@@ -164,6 +178,19 @@ export const makeGuess = mutation({
 
     const totalTime = endTime ? endTime - game.startTime : undefined;
 
+    if (game.timeoutScheduleId) {
+      ctx.scheduler.cancel(game.timeoutScheduleId);
+    }
+
+    const schedulerId = await ctx.scheduler.runAfter(
+      60 * 1000,
+      internal.game.timeoutSchedule,
+      {
+        gameId: game._id,
+        lastUpdate: now,
+      }
+    );
+
     await ctx.db.patch(game._id, {
       guessedLetters: newGuessedLetters,
       correctGuesses: newCorrectGuesses,
@@ -174,7 +201,9 @@ export const makeGuess = mutation({
       isWon,
       endTime,
       totalTime,
+      lastUpdate: now,
       score,
+      timeoutScheduleId: schedulerId,
     });
 
     if (isCompleted) {
@@ -205,5 +234,29 @@ export const createTotalTime = internalMutation({
         await ctx.db.patch(game._id, { totalTime });
       }
     }
+  },
+});
+
+export const timeoutSchedule = internalMutation({
+  args: {
+    gameId: v.id("games"),
+    lastUpdate: v.number(),
+  },
+  handler: async ({ db }, { gameId, lastUpdate }) => {
+    const game = await db.get(gameId);
+    if (!game) return;
+    if (game.isCompleted) return;
+
+    // Since the lastUpdate is different, the user has done an update, do nothing
+    if (game.lastUpdate !== lastUpdate) return;
+
+    const now = Date.now();
+    await db.patch(gameId, {
+      isCompleted: true,
+      isWon: false,
+      isAbandoned: true,
+      endTime: now,
+      totalTime: now - game.startTime,
+    });
   },
 });
