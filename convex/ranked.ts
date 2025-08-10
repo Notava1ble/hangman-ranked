@@ -1,9 +1,15 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { mutation, query, QueryCtx } from "./_generated/server";
+import {
+  internalMutation,
+  mutation,
+  query,
+  QueryCtx,
+} from "./_generated/server";
 import { getLoggedInUserHelper } from "./auth";
 import { words } from "./data/allWords";
 import { v } from "convex/values";
 import { getEloDelta } from "./lib/utils";
+import { internal } from "./_generated/api";
 
 async function getActiveRankedGameHelper(ctx: QueryCtx) {
   const userId = await getAuthUserId(ctx);
@@ -78,6 +84,8 @@ export const enterMatchmaking = mutation({
 
     await ctx.db.delete(opponent._id);
 
+    const now = Date.now();
+
     await ctx.db.insert("rankedMatches", {
       userName1: user.name || "Unknown",
       userName2: opponent.userName,
@@ -96,8 +104,11 @@ export const enterMatchmaking = mutation({
       attempts2: 0,
       mistakes1: 0,
       mistakes2: 0,
-      startTime: Date.now(),
+      startTime: now,
+      lastUpdateFrom1: now,
+      lastUpdateFrom2: now,
       isCompleted: false,
+      isAbandoned: false,
     });
   },
 });
@@ -267,10 +278,54 @@ export const makeGuess = mutation({
     // Check if game is lost (6 mistakes)
     const isLost = newMistakes >= 6;
 
+    const now = Date.now();
     const isCompleted = isWon || isLost;
-    const endTime = isCompleted ? Date.now() : undefined;
+    const endTime = isCompleted ? now : undefined;
 
     const totalTime = endTime ? endTime - game.startTime : undefined;
+
+    let schedulerId = undefined;
+    if (isUser1) {
+      if (!isCompleted) {
+        if (game.timeoutScheduleIdFor1) {
+          await ctx.scheduler.cancel(game.timeoutScheduleIdFor1);
+        }
+        schedulerId = await ctx.scheduler.runAfter(
+          30 * 1000,
+          internal.ranked.timeoutSchedule,
+          {
+            gameId: game._id,
+            lastUpdate: now,
+            userId: user._id,
+            opponentId,
+            isUser1,
+            opponentName,
+          }
+        );
+      } else if (game.timeoutScheduleIdFor1) {
+        await ctx.scheduler.cancel(game.timeoutScheduleIdFor1);
+      }
+    } else {
+      if (!isCompleted) {
+        if (game.timeoutScheduleIdFor2) {
+          await ctx.scheduler.cancel(game.timeoutScheduleIdFor2);
+        }
+        schedulerId = await ctx.scheduler.runAfter(
+          30 * 1000,
+          internal.ranked.timeoutSchedule,
+          {
+            gameId: game._id,
+            lastUpdate: now,
+            userId: user._id,
+            opponentId,
+            isUser1,
+            opponentName,
+          }
+        );
+      } else if (game.timeoutScheduleIdFor2) {
+        await ctx.scheduler.cancel(game.timeoutScheduleIdFor2);
+      }
+    }
 
     await ctx.db.patch(game._id, {
       [isUser1 ? "guessedLetters1" : "guessedLetters2"]: newGuessedLetters,
@@ -282,13 +337,16 @@ export const makeGuess = mutation({
       isCompleted,
       endTime,
       totalTime,
+      [isUser1 ? "lastUpdateFrom1" : "lastUpdateFrom2"]: now,
       winner: isCompleted ? (isWon ? user.name : opponentName) : undefined,
       winnerId: isCompleted ? (isWon ? user._id : opponentId) : undefined,
+      [isUser1 ? "timeoutScheduleIdFor1" : "timeoutScheduleIdFor2"]:
+        schedulerId,
     });
 
     if (isCompleted) {
       const opponentElo = game[isUser1 ? "userElo2" : "userElo1"];
-      const eloChange = isWon
+      const eloChange = isWon // Can simplify in here
         ? getEloDelta(
             isUser1 ? user.elo : opponentElo,
             isUser1 ? opponentElo : user.elo,
@@ -308,13 +366,60 @@ export const makeGuess = mutation({
         }),
         ctx.db.patch(game._id, { eloChange }),
       ]);
-      return {
-        isCompleted,
-        isWon,
-        attempts: isUser1 ? game.attempts1 + 1 : game.attempts2 + 1,
-        mistakes: newMistakes,
-        timeTaken: totalTime,
-      };
     }
+  },
+});
+
+export const timeoutSchedule = internalMutation({
+  args: {
+    gameId: v.id("rankedMatches"),
+    lastUpdate: v.number(),
+    isUser1: v.boolean(),
+    userId: v.id("users"),
+    opponentId: v.id("users"),
+    opponentName: v.optional(v.string()),
+  },
+  handler: async (
+    { db },
+    { gameId, lastUpdate, isUser1, opponentId, opponentName, userId }
+  ) => {
+    const game = await db.get(gameId);
+    if (!game) return;
+    if (game.isCompleted) return;
+
+    // If the last update differs, dont end the game
+    if (isUser1) {
+      if (game.lastUpdateFrom1 !== lastUpdate) return;
+    } else {
+      if (game.lastUpdateFrom2 !== lastUpdate) return;
+    }
+
+    // Elo logic
+    const userElo = game[isUser1 ? "userElo1" : "userElo2"];
+    const opponentElo = game[isUser1 ? "userElo2" : "userElo1"];
+    const eloChange = getEloDelta(
+      isUser1 ? userElo : opponentElo,
+      isUser1 ? opponentElo : userElo,
+      !isUser1
+    );
+    const now = Date.now();
+    await Promise.all([
+      db.patch(userId, {
+        elo: isUser1 ? userElo + eloChange : userElo - eloChange,
+      }),
+      db.patch(opponentId, {
+        elo: isUser1 ? opponentElo - eloChange : opponentElo + eloChange,
+      }),
+
+      db.patch(gameId, {
+        eloChange: eloChange,
+        isCompleted: true,
+        winner: opponentName,
+        winnerId: opponentId,
+        isAbandoned: true,
+        endTime: now,
+        totalTime: now - game.startTime,
+      }),
+    ]);
   },
 });

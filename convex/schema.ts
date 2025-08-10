@@ -54,9 +54,14 @@ export default defineSchema({
     startTime: v.number(),
     endTime: v.optional(v.number()),
     totalTime: v.optional(v.number()),
+    lastUpdateFrom1: v.number(),
+    lastUpdateFrom2: v.number(),
     isCompleted: v.boolean(),
     winner: v.optional(v.string()),
     winnerId: v.optional(v.id("users")),
+    isAbandoned: v.boolean(),
+    timeoutScheduleIdFor1: v.optional(v.id("_scheduled_functions")),
+    timeoutScheduleIdFor2: v.optional(v.id("_scheduled_functions")),
   })
     .index("by_user1", ["userId1"])
     .index("by_user2", ["userId2"])
