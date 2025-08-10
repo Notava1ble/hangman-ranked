@@ -178,18 +178,22 @@ export const makeGuess = mutation({
 
     const totalTime = endTime ? endTime - game.startTime : undefined;
 
-    if (game.timeoutScheduleId) {
+    let schedulerId = undefined;
+    if (!isCompleted) {
+      if (game.timeoutScheduleId) {
+        ctx.scheduler.cancel(game.timeoutScheduleId);
+      }
+      schedulerId = await ctx.scheduler.runAfter(
+        60 * 1000,
+        internal.game.timeoutSchedule,
+        {
+          gameId: game._id,
+          lastUpdate: now,
+        }
+      );
+    } else if (game.timeoutScheduleId) {
       ctx.scheduler.cancel(game.timeoutScheduleId);
     }
-
-    const schedulerId = await ctx.scheduler.runAfter(
-      60 * 1000,
-      internal.game.timeoutSchedule,
-      {
-        gameId: game._id,
-        lastUpdate: now,
-      }
-    );
 
     await ctx.db.patch(game._id, {
       guessedLetters: newGuessedLetters,
