@@ -86,7 +86,7 @@ export const enterMatchmaking = mutation({
 
     const now = Date.now();
 
-    await ctx.db.insert("rankedMatches", {
+    const matchId = await ctx.db.insert("rankedMatches", {
       userName1: user.name || "Unknown",
       userName2: opponent.userName,
       userId1: user._id,
@@ -110,6 +110,16 @@ export const enterMatchmaking = mutation({
       isCompleted: false,
       isAbandoned: false,
     });
+
+    // Delete the game if no move is ever made for 60 seconds
+    await ctx.scheduler.runAfter(
+      30 * 1000,
+      internal.ranked.timeoutStaleDelete,
+      {
+        matchId,
+        lastUpdate: now,
+      }
+    );
   },
 });
 
@@ -423,5 +433,50 @@ export const timeoutSchedule = internalMutation({
         totalTime: now - game.startTime,
       }),
     ]);
+  },
+});
+
+export const timeoutStaleDelete = internalMutation({
+  args: {
+    matchId: v.id("rankedMatches"),
+    lastUpdate: v.number(),
+  },
+  handler: async ({ db, runMutation }, { matchId, lastUpdate }) => {
+    const game = await db.get(matchId);
+    if (!game) return;
+    if (game.isCompleted) return;
+
+    const firstUnchanged = game.lastUpdateFrom1 === lastUpdate;
+    const secondUnchanged = game.lastUpdateFrom2 === lastUpdate;
+
+    // Nobody moved thus delete the match
+    if (firstUnchanged && secondUnchanged) {
+      await db.delete(matchId);
+      return;
+    }
+
+    // Both moved meaning they have their own schedules so we do nothing
+    if (!firstUnchanged && !secondUnchanged) {
+      return;
+    }
+
+    // Exactly one player hasn't moved so timeout that inactive player
+    const inactiveIsUser1 = firstUnchanged; // true if the first user is inactive, else its false, meaning the second is inactive
+    const inactiveUserId = inactiveIsUser1 ? game.userId1 : game.userId2;
+    const activeUserId = inactiveIsUser1 ? game.userId2 : game.userId1;
+    const activeName = inactiveIsUser1 ? game.userName2 : game.userName1;
+    const inactiveLastUpdate = inactiveIsUser1
+      ? game.lastUpdateFrom1
+      : game.lastUpdateFrom2;
+
+    // call the timeoutSchedule funciton for the inactive player
+    await runMutation(internal.ranked.timeoutSchedule, {
+      gameId: matchId,
+      lastUpdate: inactiveLastUpdate,
+      isUser1: inactiveIsUser1,
+      userId: inactiveUserId,
+      opponentId: activeUserId,
+      opponentName: activeName,
+    });
   },
 });

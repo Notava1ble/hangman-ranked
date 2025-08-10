@@ -75,7 +75,7 @@ const RankedGame = () => {
     return (
       <Container>
         {/* We know that queueEmtryTime is defined as isInQueue is true */}
-        <Timer startTime={new Date(queueInfo.queueEntryTime!)} />
+        <Timer startTime={new Date(queueInfo.queueEntryTime! + 1000)} />
       </Container>
     );
   }
