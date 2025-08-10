@@ -416,6 +416,8 @@ export const timeoutSchedule = internalMutation({
         isCompleted: true,
         winner: opponentName,
         winnerId: opponentId,
+        timeoutScheduleIdFor1: undefined,
+        timeoutScheduleIdFor2: undefined,
         isAbandoned: true,
         endTime: now,
         totalTime: now - game.startTime,
