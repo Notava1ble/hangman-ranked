@@ -175,6 +175,7 @@ export const getCurrentRankedGameStats = query({
   handler: async (ctx) => {
     const data = await getActiveRankedGameHelper(ctx);
     if (!data) {
+      const now = Date.now();
       return {
         opponentData: { name: "Unknown", elo: 1200 },
         guesses: [],
@@ -185,6 +186,8 @@ export const getCurrentRankedGameStats = query({
         opponentCorrectGuesses: [],
         opponentMistakes: 0,
         opponentAttempts: 0,
+        lastUpdate: now,
+        opponentLastUpdate: now,
       };
     }
     const { activeRankedGame, user } = data;
@@ -202,6 +205,9 @@ export const getCurrentRankedGameStats = query({
     const attempts = isUser1
       ? activeRankedGame.attempts1
       : activeRankedGame.attempts2;
+    const lastUpdate = isUser1
+      ? activeRankedGame.lastUpdateFrom1
+      : activeRankedGame.lastUpdateFrom2;
 
     const opponentGuesses = !isUser1
       ? activeRankedGame.guessedLetters1
@@ -215,6 +221,9 @@ export const getCurrentRankedGameStats = query({
     const opponentAttempts = !isUser1
       ? activeRankedGame.attempts1
       : activeRankedGame.attempts2;
+    const opponentLastUpdate = !isUser1
+      ? activeRankedGame.lastUpdateFrom1
+      : activeRankedGame.lastUpdateFrom2;
 
     return {
       opponentData: {
@@ -225,10 +234,12 @@ export const getCurrentRankedGameStats = query({
       correctGuesses,
       mistakes,
       attempts,
+      lastUpdate,
       opponentGuesses,
       opponentCorrectGuesses,
       opponentMistakes,
       opponentAttempts,
+      opponentLastUpdate,
     };
   },
 });

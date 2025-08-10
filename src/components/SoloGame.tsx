@@ -8,6 +8,7 @@ import Keyboard from "./Keyboard";
 import HangmanFigure from "./HangmanFigure";
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useRef } from "react";
+import Countdown from "./Countdown";
 
 const SoloGame = () => {
   const startButtonRef = useRef<HTMLButtonElement>(null);
@@ -71,6 +72,12 @@ const SoloGame = () => {
     <Container className="flex-center space-x-4">
       <div className="w-2/5 h-full mb-4 hidden md:block">
         <HangmanFigure wrongGuesses={currentGameStats?.mistakes} />
+        {currentGameStats && (
+          <Countdown
+            lastUpdate={new Date(currentGameStats.lastUpdate)}
+            countdownFrom={60}
+          />
+        )}
       </div>
       <div className="w-3/5  flex flex-col justify-between items-center h-full gap-10 my-6">
         <div className="w-full flex-center gap-4">

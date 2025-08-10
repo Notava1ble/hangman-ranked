@@ -101,18 +101,21 @@ export const getCurrentGameStats = query({
         correctGuesses: [],
         mistakes: 0,
         attempts: 0,
+        lastUpdate: Date.now(),
       };
     }
     const guesses = activeGame.guessedLetters;
     const correctGuesses = activeGame.correctGuesses;
     const mistakes = activeGame.mistakes;
     const attempts = activeGame.attempts;
+    const lastUpdate = activeGame.lastUpdate;
 
     return {
       guesses,
       correctGuesses,
       mistakes,
       attempts,
+      lastUpdate,
     };
   },
 });
@@ -259,6 +262,7 @@ export const timeoutSchedule = internalMutation({
       isCompleted: true,
       isWon: false,
       isAbandoned: true,
+      score: 0,
       endTime: now,
       totalTime: now - game.startTime,
     });

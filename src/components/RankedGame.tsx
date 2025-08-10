@@ -9,6 +9,7 @@ import HangmanFigure from "./HangmanFigure";
 import { MistakeAttemptCard } from "./SoloGame";
 import Keyboard from "./Keyboard";
 import Timer from "./Timer";
+import Countdown from "./Countdown";
 
 const RankedGame = () => {
   const startButtonRef = useRef<HTMLButtonElement>(null);
@@ -92,6 +93,11 @@ const RankedGame = () => {
       <div className="flex-center space-x-4">
         <div className="w-2/5 h-full mb-4 hidden md:block">
           <HangmanFigure wrongGuesses={currentRankedGameStats?.mistakes} />
+          {currentRankedGameStats && (
+            <Countdown
+              lastUpdate={new Date(currentRankedGameStats.lastUpdate)}
+            />
+          )}
         </div>
         <div className="w-3/5  flex flex-col justify-between items-center h-full gap-10 my-6">
           <div className="w-full flex-center gap-4">
