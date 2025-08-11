@@ -1,9 +1,10 @@
 import { z } from "zod";
 
 export const emailValidator = z.object({
-  email: z.string().email(),
+  email: z.string().email().max(254, "Email is too long"),
   name: z
     .string()
-    .min(3, "The username mustn't be shorter then 3 characters")
-    .max(20, "The username mustn't be longer then 20 characters"),
+    .trim()
+    .min(3, "The username must not be shorter than 3 characters")
+    .max(20, "The username must not be longer than 20 characters"),
 });

@@ -29,12 +29,13 @@ const Navbar = () => {
             <div className="flex items-center gap-4">
               <Authenticated>
                 <Button
-                  onClick={() => {
-                    void signOut();
+                  onClick={async () => {
+                    await signOut();
                     router.refresh();
                   }}
                   variant="link"
                 >
+                  {" "}
                   Sign Out
                 </Button>
                 <Avatar>

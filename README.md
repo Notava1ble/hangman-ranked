@@ -6,6 +6,6 @@
 - [ ] Fix the race conditions in ranked matches
 - [x] Make the usernames unique and added when the user firsts signs up
 - [x] Add email+password login
-- [ ] Add a field for username in signup form
+- [x] Add a field for username in signup form
 - [ ] Add the feature to sort leaderboard for time and score aswell
 - [ ] Add a leaderboard for ranked

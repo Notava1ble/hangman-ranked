@@ -63,15 +63,16 @@ export function getEloDelta(
   return Math.round(kFactor * (actualA - expectedA));
 }
 
+const BASE62_ALPHABET =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
 export function randomSuffix(length = 6): string {
-  const chars =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  const n = chars.length;
+  const n = BASE62_ALPHABET.length;
   let result = "";
 
   // fine enough for name suffixes
   for (let i = 0; i < length; i++) {
-    result += chars[Math.floor(Math.random() * n)];
+    result += BASE62_ALPHABET[Math.floor(Math.random() * n)];
   }
   return result;
 }

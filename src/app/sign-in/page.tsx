@@ -14,7 +14,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useState } from "react";
-import LinkBtn from "@/components/LinkBtn";
 import { useRouter } from "next/navigation";
 import { credentialValidator } from "@/lib/validators";
 
@@ -88,7 +87,12 @@ export default function LoginPage() {
                         setFieldErrors({ name: ["This username is taken"] });
                         return;
                       }
-                      setErrors("Invalid email or password.");
+                      const errorMessage =
+                        step === "signUp"
+                          ? "Failed to create account. Please check your information and try again."
+                          : "Invalid email or password.";
+
+                      setErrors(errorMessage);
                     }
                   }}
                 >
@@ -107,7 +111,6 @@ export default function LoginPage() {
                       />
                       {fieldErrors.email && (
                         <p
-                          id="auth-error"
                           className="text-red-500 text-sm -mt-1.5"
                           role="alert"
                           aria-live="polite"
@@ -122,15 +125,13 @@ export default function LoginPage() {
                         <Input
                           id="name"
                           name="name"
-                          type="name"
+                          type="text"
                           placeholder="username_example123"
                           aria-describedby={errors ? "auth-error" : undefined}
                           required
-                          autoFocus
                         />
                         {fieldErrors.name && (
                           <p
-                            id="auth-error"
                             className="text-red-500 text-sm -mt-1.5"
                             role="alert"
                             aria-live="polite"
@@ -157,7 +158,6 @@ export default function LoginPage() {
                       />
                       {fieldErrors.password && (
                         <p
-                          id="auth-error"
                           className="text-red-500 text-sm -mt-1.5"
                           role="alert"
                           aria-live="polite"
@@ -185,19 +185,17 @@ export default function LoginPage() {
                     {step === "signUp"
                       ? `Already have an account? `
                       : `Don't have an account? `}
-                    <LinkBtn
+                    <Button
                       variant="link"
-                      href="#"
                       className="underline underline-offset-4"
-                      onClick={(e) => {
-                        e.preventDefault();
+                      onClick={() => {
                         setErrors(undefined);
                         setFieldErrors({});
                         setStep(step === "signIn" ? "signUp" : "signIn");
                       }}
                     >
                       {step === "signUp" ? "Log in instead" : "Sign up instead"}
-                    </LinkBtn>
+                    </Button>
                   </div>
                 </form>
               </div>

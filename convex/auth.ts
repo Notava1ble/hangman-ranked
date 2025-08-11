@@ -29,14 +29,15 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
 
       // Check if email is already taken
       if (args.provider.id === "password" && args.profile.name) {
+        const name = (args.profile.name as string).toLowerCase();
+
         const sameNameUser = await ctx.db
           .query("users")
-          .withIndex("name", (q) => q.eq("name", args.profile.name as string))
+          .withIndex("name", (q) => q.eq("name", name))
           .unique();
         if (sameNameUser) {
           throw new ConvexError("This username is taken");
         }
-        const name = (args.profile.name as string).toLowerCase();
         const image = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
 
         const userId = await ctx.db.insert("users", {
@@ -49,7 +50,6 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
 
         return userId;
       }
-
       const name =
         (args.profile.name as string | undefined) ??
         email?.split("@")[0] ??
