@@ -9,4 +9,5 @@
 - [x] Add a field for username in signup form
 - [ ] Add the feature to sort leaderboard for time and score aswell
 - [ ] Add a leaderboard for ranked
-- [ ] Make the timer visable in mobile
+- [x] Make the timer visable in mobile
+- [ ] Prevent explicit words from usernames

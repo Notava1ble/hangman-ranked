@@ -100,7 +100,7 @@ const RankedGame = () => {
           )}
         </div>
         <div className="w-3/5  flex flex-col justify-between items-center h-full gap-10 my-6">
-          <div className="mx-auto w-fit">
+          <div className="mx-auto w-fit block md:hidden">
             {currentRankedGameStats && (
               <Countdown
                 lastUpdate={new Date(currentRankedGameStats.lastUpdate)}
