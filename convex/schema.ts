@@ -80,5 +80,6 @@ export default defineSchema({
   })
     .index("phone", ["phone"])
     .index("email", ["email"])
+    .index("by_name", ["name"])
     .index("by_elo", ["elo"]),
 });

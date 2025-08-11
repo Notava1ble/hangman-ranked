@@ -9,10 +9,12 @@ import { ArrowRight, Home, Sword, Trophy } from "lucide-react";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { api } from "../../convex/_generated/api";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const { signOut } = useAuthActions();
   const isMobile = useIsMobile();
+  const router = useRouter();
 
   const user = useQuery(api.auth.loggedInUser);
 
@@ -26,10 +28,17 @@ const Navbar = () => {
             </h1>
             <div className="flex items-center gap-4">
               <Authenticated>
-                <Button onClick={() => void signOut()} variant="link">
+                <Button
+                  onClick={() => {
+                    void signOut();
+                    router.refresh();
+                  }}
+                  variant="link"
+                >
                   Sign Out
                 </Button>
                 <Avatar>
+                  {/* Show a better placeholder when there's no image */}
                   <AvatarImage src={user?.image} />
                   <AvatarFallback />
                 </Avatar>
