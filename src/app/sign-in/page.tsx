@@ -16,13 +16,22 @@ import { useAuthActions } from "@convex-dev/auth/react";
 import { useState } from "react";
 import LinkBtn from "@/components/LinkBtn";
 import { useRouter } from "next/navigation";
+import { credentialValidator } from "@/lib/validators";
+
+type ErrorType = {
+  email?: string[] | undefined;
+  password?: string[] | undefined;
+};
 
 export default function LoginPage() {
   const { signIn } = useAuthActions();
   const [step, setStep] = useState<"signUp" | "signIn">("signIn");
+  const [fieldErrors, setFieldErrors] = useState<ErrorType>({});
   const [errors, setErrors] = useState<string | undefined>(undefined);
 
   const router = useRouter();
+
+  console.log(errors);
 
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
@@ -57,11 +66,21 @@ export default function LoginPage() {
                     event.preventDefault();
                     const formData = new FormData(event.currentTarget);
 
+                    if (formData.get("flow") === "signUp") {
+                      const { error } = credentialValidator.safeParse(
+                        Object.fromEntries(formData.entries())
+                      );
+
+                      if (error) {
+                        setFieldErrors(error.flatten().fieldErrors);
+                        return;
+                      }
+                    }
+
                     try {
                       await signIn("password", formData);
                       router.replace("/");
-                    } catch (e) {
-                      console.log(e, typeof e);
+                    } catch {
                       setErrors("Invalid email or password.");
                     }
                   }}
@@ -79,6 +98,16 @@ export default function LoginPage() {
                         required
                         autoFocus
                       />
+                      {fieldErrors.email && (
+                        <p
+                          id="auth-error"
+                          className="text-red-500 text-sm -mt-1.5"
+                          role="alert"
+                          aria-live="polite"
+                        >
+                          {fieldErrors.email}
+                        </p>
+                      )}
                     </div>
                     <div className="grid gap-3">
                       <Label htmlFor="password">Password</Label>
@@ -95,6 +124,16 @@ export default function LoginPage() {
                         minLength={step === "signUp" ? 8 : undefined}
                         aria-describedby={errors ? "auth-error" : undefined}
                       />
+                      {fieldErrors.password && (
+                        <p
+                          id="auth-error"
+                          className="text-red-500 text-sm -mt-1.5"
+                          role="alert"
+                          aria-live="polite"
+                        >
+                          {fieldErrors.password}
+                        </p>
+                      )}
                     </div>
                     <input name="flow" type="hidden" value={step} />
                     <Button type="submit" className="w-full">
@@ -103,7 +142,7 @@ export default function LoginPage() {
                     {errors && (
                       <p
                         id="auth-error"
-                        className="text-red-500"
+                        className="text-red-500 -mt-4 mb-4 text-sm"
                         role="alert"
                         aria-live="polite"
                       >
@@ -122,6 +161,7 @@ export default function LoginPage() {
                       onClick={(e) => {
                         e.preventDefault();
                         setErrors(undefined);
+                        setFieldErrors({});
                         setStep(step === "signIn" ? "signUp" : "signIn");
                       }}
                     >

@@ -5,9 +5,23 @@ import { convexAuth, getAuthUserId } from "@convex-dev/auth/server";
 import { MutationCtx, query, QueryCtx } from "./_generated/server";
 
 import { randomSuffix } from "./lib/utils";
+import { emailValidator } from "./lib/validators";
+import { ConvexError } from "convex/values";
 
 export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
-  providers: [GitHub, Google, Password],
+  providers: [
+    GitHub,
+    Google,
+    Password({
+      profile(params) {
+        const { error, data } = emailValidator.safeParse(params);
+        if (error) {
+          throw new ConvexError(error.format());
+        }
+        return { email: data.email };
+      },
+    }),
+  ],
   callbacks: {
     /**
      * Fully replace Convex Auth’s default upsert logic.
