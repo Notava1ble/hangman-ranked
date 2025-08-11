@@ -80,6 +80,14 @@ const SoloGame = () => {
         )}
       </div>
       <div className="w-3/5  flex flex-col justify-between items-center h-full gap-10 my-6">
+        <div className="mx-auto w-fit">
+          {currentGameStats && (
+            <Countdown
+              lastUpdate={new Date(currentGameStats.lastUpdate)}
+              countdownFrom={60}
+            />
+          )}
+        </div>
         <div className="w-full flex-center gap-4">
           <MistakeAttemptCard
             displayText="Attempts"

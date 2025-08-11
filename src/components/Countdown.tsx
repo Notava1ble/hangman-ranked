@@ -23,7 +23,7 @@ const Countdown = ({
   }, [updateTimer]);
 
   return (
-    <div className="w-fit mx-auto text-center mt-4">
+    <div className="w-fit mx-auto text-center">
       <Tooltip>
         <TooltipTrigger>
           <p>Time Remaining</p>

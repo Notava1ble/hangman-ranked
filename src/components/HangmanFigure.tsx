@@ -85,7 +85,7 @@ const HangmanFigure = ({ wrongGuesses = 0 }: { wrongGuesses?: number }) => {
   );
 
   return (
-    <div className="border-4 border-black w-fit rounded-sm pb-4 mx-auto bg-white mt-4">
+    <div className="border-4 border-black w-fit rounded-sm pb-4 mx-auto bg-white mt-4 mb-4">
       <svg height="250" width="200" className="mx-auto mt-4">
         {/* Gallows */}
         <line

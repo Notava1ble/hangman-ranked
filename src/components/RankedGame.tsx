@@ -100,6 +100,13 @@ const RankedGame = () => {
           )}
         </div>
         <div className="w-3/5  flex flex-col justify-between items-center h-full gap-10 my-6">
+          <div className="mx-auto w-fit">
+            {currentRankedGameStats && (
+              <Countdown
+                lastUpdate={new Date(currentRankedGameStats.lastUpdate)}
+              />
+            )}
+          </div>
           <div className="w-full flex-center gap-4">
             <MistakeAttemptCard
               displayText="Attempts"
