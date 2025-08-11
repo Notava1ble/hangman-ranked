@@ -35,7 +35,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
       const image =
         (args.profile.image as string | undefined) ??
         (args.profile.picture as string | undefined) ??
-        "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png";
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(finalName)}&background=random`;
 
       const userId = await ctx.db.insert("users", {
         email,
@@ -72,16 +72,25 @@ export async function generateUniqueName(
 
   // Try base name + random suffix until available
   let finalName = normalized;
+  let attempts = 0;
+  const maxAttempts = 10;
   while (
     await ctx.db
       .query("users")
-      .withIndex("by_name", (q) => q.eq("name", finalName))
+      .withIndex("name", (q) => q.eq("name", finalName))
       .unique()
   ) {
+    if (attempts >= maxAttempts) {
+      // Fall back to timestamp-based unique name
+      finalName = `${normalized}_${Date.now()}`;
+      break;
+    }
     const suffix = randomSuffix();
-    finalName = `${normalized}_${suffix}`;
+    const candidate = `${normalized}_${suffix}`;
+    // Ensure the final name doesn't exceed field limits (I know it wont but still)
+    finalName = candidate.length > 20 ? candidate.slice(0, 20) : candidate;
+    attempts++;
   }
-
   return finalName;
 }
 

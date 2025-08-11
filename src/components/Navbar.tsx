@@ -88,7 +88,13 @@ const Navbar = () => {
         </div>
         <div className="flex items-center gap-4">
           <Authenticated>
-            <Button onClick={() => void signOut()} variant="link">
+            <Button
+              onClick={() => {
+                void signOut();
+                router.refresh();
+              }}
+              variant="link"
+            >
               Sign Out
             </Button>
             <Avatar>

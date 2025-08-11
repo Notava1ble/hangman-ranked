@@ -42,35 +42,30 @@ export default function LoginPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form
-                onSubmit={async (event) => {
-                  event.preventDefault();
-                  const formData = new FormData(event.currentTarget);
+              <div className="grid gap-6">
+                <div className="flex flex-col gap-4">
+                  <SignInBtn provider="Google" />
+                  <SignInBtn provider="GitHub" />
+                </div>
+                <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+                  <span className="bg-card text-muted-foreground relative z-10 px-2">
+                    Or continue with
+                  </span>
+                </div>
+                <form
+                  onSubmit={async (event) => {
+                    event.preventDefault();
+                    const formData = new FormData(event.currentTarget);
 
-                  try {
-                    await signIn("password", formData);
-                    router.push("/");
-                  } catch (e) {
-                    console.log(e, typeof e);
-
-                    if (e instanceof Error) {
-                      setErrors(e.message);
-                    } else {
-                      setErrors(String(e));
+                    try {
+                      await signIn("password", formData);
+                      router.replace("/");
+                    } catch (e) {
+                      console.log(e, typeof e);
+                      setErrors("Invalid email or password.");
                     }
-                  }
-                }}
-              >
-                <div className="grid gap-6">
-                  <div className="flex flex-col gap-4">
-                    <SignInBtn provider="Google" />
-                    <SignInBtn provider="GitHub" />
-                  </div>
-                  <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                    <span className="bg-card text-muted-foreground relative z-10 px-2">
-                      Or continue with
-                    </span>
-                  </div>
+                  }}
+                >
                   <div className="grid gap-6">
                     <div className="grid gap-3">
                       <Label htmlFor="email">Email</Label>
@@ -79,7 +74,10 @@ export default function LoginPage() {
                         name="email"
                         type="email"
                         placeholder="you@example.com"
+                        autoComplete="email"
+                        aria-describedby={errors ? "auth-error" : undefined}
                         required
+                        autoFocus
                       />
                     </div>
                     <div className="grid gap-3">
@@ -89,13 +87,29 @@ export default function LoginPage() {
                         type="password"
                         name="password"
                         required
+                        autoComplete={
+                          step === "signUp"
+                            ? "new-password"
+                            : "current-password"
+                        }
+                        minLength={step === "signUp" ? 8 : undefined}
+                        aria-describedby={errors ? "auth-error" : undefined}
                       />
                     </div>
                     <input name="flow" type="hidden" value={step} />
                     <Button type="submit" className="w-full">
                       {step === "signUp" ? "Sign up" : "Log in"}
                     </Button>
-                    {errors && <p className="text-red-500">{errors}</p>}
+                    {errors && (
+                      <p
+                        id="auth-error"
+                        className="text-red-500"
+                        role="alert"
+                        aria-live="polite"
+                      >
+                        {errors}
+                      </p>
+                    )}
                   </div>
                   <div className="text-center text-sm">
                     {step === "signUp"
@@ -105,15 +119,17 @@ export default function LoginPage() {
                       variant="link"
                       href="#"
                       className="underline underline-offset-4"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setErrors(undefined);
                         setStep(step === "signIn" ? "signUp" : "signIn");
                       }}
                     >
                       {step === "signUp" ? "Log in instead" : "Sign up instead"}
                     </LinkBtn>
                   </div>
-                </div>
-              </form>
+                </form>
+              </div>
             </CardContent>
           </Card>
         </div>
