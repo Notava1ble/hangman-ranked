@@ -11,3 +11,4 @@
 - [ ] Add a leaderboard for ranked
 - [x] Make the timer visable in mobile
 - [ ] Prevent explicit words from usernames
+- [ ] Add the option to leave matchmaking
