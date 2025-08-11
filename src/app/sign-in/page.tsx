@@ -21,6 +21,7 @@ import { credentialValidator } from "@/lib/validators";
 type ErrorType = {
   email?: string[] | undefined;
   password?: string[] | undefined;
+  name?: string[] | undefined;
 };
 
 export default function LoginPage() {
@@ -30,8 +31,6 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<string | undefined>(undefined);
 
   const router = useRouter();
-
-  console.log(errors);
 
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
@@ -65,6 +64,8 @@ export default function LoginPage() {
                   onSubmit={async (event) => {
                     event.preventDefault();
                     const formData = new FormData(event.currentTarget);
+                    setFieldErrors({});
+                    setErrors(undefined);
 
                     if (formData.get("flow") === "signUp") {
                       const { error } = credentialValidator.safeParse(
@@ -80,7 +81,13 @@ export default function LoginPage() {
                     try {
                       await signIn("password", formData);
                       router.replace("/");
-                    } catch {
+                    } catch (e: unknown) {
+                      if (
+                        (e as Error).message.includes("This username is taken")
+                      ) {
+                        setFieldErrors({ name: ["This username is taken"] });
+                        return;
+                      }
                       setErrors("Invalid email or password.");
                     }
                   }}
@@ -109,6 +116,30 @@ export default function LoginPage() {
                         </p>
                       )}
                     </div>
+                    {step === "signUp" && (
+                      <div className="grid gap-3">
+                        <Label htmlFor="name">Username</Label>
+                        <Input
+                          id="name"
+                          name="name"
+                          type="name"
+                          placeholder="username_example123"
+                          aria-describedby={errors ? "auth-error" : undefined}
+                          required
+                          autoFocus
+                        />
+                        {fieldErrors.name && (
+                          <p
+                            id="auth-error"
+                            className="text-red-500 text-sm -mt-1.5"
+                            role="alert"
+                            aria-live="polite"
+                          >
+                            {fieldErrors.name}
+                          </p>
+                        )}
+                      </div>
+                    )}
                     <div className="grid gap-3">
                       <Label htmlFor="password">Password</Label>
                       <Input

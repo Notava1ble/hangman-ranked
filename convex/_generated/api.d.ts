@@ -18,6 +18,7 @@ import type * as data_allWords from "../data/allWords.js";
 import type * as game from "../game.js";
 import type * as http from "../http.js";
 import type * as leaderboard from "../leaderboard.js";
+import type * as lib_CustomEmail from "../lib/CustomEmail.js";
 import type * as lib_utils from "../lib/utils.js";
 import type * as lib_validators from "../lib/validators.js";
 import type * as ranked from "../ranked.js";
@@ -37,6 +38,7 @@ declare const fullApi: ApiFromModules<{
   game: typeof game;
   http: typeof http;
   leaderboard: typeof leaderboard;
+  "lib/CustomEmail": typeof lib_CustomEmail;
   "lib/utils": typeof lib_utils;
   "lib/validators": typeof lib_validators;
   ranked: typeof ranked;

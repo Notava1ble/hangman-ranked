@@ -1,27 +1,14 @@
 import GitHub from "@auth/core/providers/github";
 import Google from "@auth/core/providers/google";
-import { Password } from "@convex-dev/auth/providers/Password";
 import { convexAuth, getAuthUserId } from "@convex-dev/auth/server";
 import { MutationCtx, query, QueryCtx } from "./_generated/server";
 
 import { randomSuffix } from "./lib/utils";
-import { emailValidator } from "./lib/validators";
 import { ConvexError } from "convex/values";
+import CustomEmail from "./lib/CustomEmail";
 
 export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
-  providers: [
-    GitHub,
-    Google,
-    Password({
-      profile(params) {
-        const { error, data } = emailValidator.safeParse(params);
-        if (error) {
-          throw new ConvexError(error.format());
-        }
-        return { email: data.email };
-      },
-    }),
-  ],
+  providers: [GitHub, Google, CustomEmail],
   callbacks: {
     /**
      * Fully replace Convex Auth’s default upsert logic.
@@ -39,6 +26,29 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
       //   args.profile.emailVerified === true ? Date.now() : undefined;
       // const phoneVerificationTime =
       //   args.profile.phoneVerified === true ? Date.now() : undefined;
+
+      // Check if email is already taken
+      if (args.provider.id === "password" && args.profile.name) {
+        const sameNameUser = await ctx.db
+          .query("users")
+          .withIndex("name", (q) => q.eq("name", args.profile.name as string))
+          .unique();
+        if (sameNameUser) {
+          throw new ConvexError("This username is taken");
+        }
+        const name = (args.profile.name as string).toLowerCase();
+        const image = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
+
+        const userId = await ctx.db.insert("users", {
+          email,
+          phone,
+          name,
+          image,
+          elo: 1200,
+        });
+
+        return userId;
+      }
 
       const name =
         (args.profile.name as string | undefined) ??
