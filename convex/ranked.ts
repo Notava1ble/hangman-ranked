@@ -42,6 +42,24 @@ async function getActiveRankedGameHelper(ctx: QueryCtx) {
   };
 }
 
+export const exitMatchmaking = mutation({
+  handler: async (ctx) => {
+    const user = await getLoggedInUserHelper(ctx);
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+
+    const activeQueue = await ctx.db
+      .query("matchQueue")
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .unique();
+
+    if (!activeQueue) return;
+
+    await ctx.db.delete(activeQueue._id);
+  },
+});
+
 export const enterMatchmaking = mutation({
   handler: async (ctx) => {
     const user = await getLoggedInUserHelper(ctx);

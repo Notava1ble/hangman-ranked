@@ -30,7 +30,9 @@ export default defineSchema({
     userId: v.id("users"),
     userName: v.string(),
     userElo: v.number(),
-  }).index("by_elo", ["userElo"]),
+  })
+    .index("by_elo", ["userElo"])
+    .index("by_user", ["userId"]),
   rankedMatches: defineTable({
     userId1: v.id("users"),
     userId2: v.id("users"),

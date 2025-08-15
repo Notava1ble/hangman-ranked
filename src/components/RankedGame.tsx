@@ -19,6 +19,7 @@ const RankedGame = () => {
   const currentRankedGameStats = useQuery(api.ranked.getCurrentRankedGameStats);
 
   const enterMatchmaking = useMutation(api.ranked.enterMatchmaking);
+  const leaveMatchmaking = useMutation(api.ranked.exitMatchmaking);
   const makeGuess = useMutation(api.ranked.makeGuess);
 
   const isGameActive = !!displayWord;
@@ -74,9 +75,12 @@ const RankedGame = () => {
 
   if (queueInfo?.isInQueue) {
     return (
-      <Container>
+      <Container className="flex-col-center gap-4">
         {/* We know that queueEmtryTime is defined as isInQueue is true */}
         <Timer startTime={new Date(queueInfo.queueEntryTime! - 1000)} />
+        <Button onClick={() => leaveMatchmaking()} variant="outline">
+          Cancel
+        </Button>
       </Container>
     );
   }
