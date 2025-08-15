@@ -76,3 +76,22 @@ export function randomSuffix(length = 6): string {
   }
   return result;
 }
+
+// export function getUpdatedStats(
+//   user: DataModel["users"]["document"],
+//   isWon: boolean
+// ) {
+//   const totalGames = user.userStats ? user.userStats.gamesPlayed + 1 : 1;
+//   const wins = user.userStats
+//     ? isWon
+//       ? user.userStats.wins + 1
+//       : user.userStats.wins
+//     : 1;
+
+//   return {
+//     gamesPlayed: totalGames,
+//     wins,
+//     winRate: wins / totalGames,
+//     lastSeen: Date.now(),
+//   };
+// }

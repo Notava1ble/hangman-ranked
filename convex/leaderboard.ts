@@ -30,3 +30,21 @@ export const getSoloLeaderboard = query({
     });
   },
 });
+
+export const getEloLeaderboard = query({
+  handler: async (ctx) => {
+    const topEloPlayers = await ctx.db
+      .query("users")
+      .withIndex("by_elo")
+      .order("desc")
+      .take(100);
+
+    return topEloPlayers.map((player, i) => {
+      return {
+        rank: i + 1,
+        user: player.name,
+        elo: player.elo,
+      };
+    });
+  },
+});
