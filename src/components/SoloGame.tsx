@@ -74,7 +74,7 @@ const SoloGame = () => {
         <HangmanFigure wrongGuesses={currentGameStats?.mistakes} />
         {currentGameStats && (
           <Countdown
-            lastUpdate={new Date(currentGameStats.lastUpdate)}
+            lastUpdate={new Date(currentGameStats.lastUpdate - 1000)}
             countdownFrom={60}
           />
         )}
@@ -83,7 +83,7 @@ const SoloGame = () => {
         <div className="mx-auto w-fit block md:hidden">
           {currentGameStats && (
             <Countdown
-              lastUpdate={new Date(currentGameStats.lastUpdate)}
+              lastUpdate={new Date(currentGameStats.lastUpdate - 1000)}
               countdownFrom={60}
             />
           )}

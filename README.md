@@ -8,7 +8,9 @@
 - [x] Add email+password login
 - [x] Add a field for username in signup form
 - [ ] Add the feature to sort leaderboard for time and score aswell
-- [ ] Add a leaderboard for ranked
+- [x] Add a leaderboard for ranked
 - [x] Make the timer visable in mobile
 - [ ] Prevent explicit words from usernames
-- [ ] Add the option to leave matchmaking
+- [x] Add the option to leave matchmaking
+  
+- [ ] Improve the ui/ux
