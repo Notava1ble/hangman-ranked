@@ -77,7 +77,7 @@ const RankedGame = () => {
     return (
       <Container className="flex-col-center gap-4">
         {/* We know that queueEmtryTime is defined as isInQueue is true */}
-        <Timer startTime={new Date(queueInfo.queueEntryTime! - 1000)} />
+        <Timer startTime={new Date(queueInfo.queueEntryTime!)} />
         <Button onClick={() => leaveMatchmaking()} variant="outline">
           Cancel
         </Button>

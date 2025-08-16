@@ -161,7 +161,7 @@ export const queueInfo = query({
 
     const userEntryInQueue = await ctx.db
       .query("matchQueue")
-      .filter((q) => q.eq(q.field("userId"), user._id))
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
       .first();
 
     if (!userEntryInQueue) {

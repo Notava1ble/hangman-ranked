@@ -10,11 +10,23 @@ const Countdown = ({
   lastUpdate: Date;
   countdownFrom?: number;
 }) => {
-  const [, setTick] = useState(0);
+  const [timeElapsed, setTimeElapsed] = useState(
+    Date.now() - lastUpdate.getTime() < 0
+      ? 0
+      : Date.now() - lastUpdate.getTime()
+  );
 
   const updateTimer = useCallback(() => {
-    setTick((t) => t + 1);
+    setTimeElapsed((prev) => prev + 1000);
   }, []);
+
+  useEffect(() => {
+    setTimeElapsed(
+      Date.now() - lastUpdate.getTime() < 0
+        ? 0
+        : Date.now() - lastUpdate.getTime()
+    );
+  }, [lastUpdate]);
 
   // Rerender every second
   useEffect(() => {
@@ -38,12 +50,7 @@ const Countdown = ({
         aria-live="polite"
         aria-label="Time left"
       >
-        {Math.max(
-          0,
-          (countdownFrom ?? 30) -
-            Math.ceil((Date.now() - lastUpdate.getTime()) / 1000)
-        )}
-        s
+        {Math.max(0, (countdownFrom ?? 30) - Math.ceil(timeElapsed / 1000))}s
       </div>
     </div>
   );

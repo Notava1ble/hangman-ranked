@@ -4,10 +4,12 @@ import { useCallback, useEffect, useState } from "react";
 import { formatDigitalTime } from "../lib/utils";
 
 const Timer = ({ startTime }: { startTime: Date }) => {
-  const [, setTick] = useState(0);
+  const [displayedTime, setDisplayedTime] = useState(
+    Date.now() - startTime.getTime() < 0 ? 0 : Date.now() - startTime.getTime()
+  );
 
   const updateTimer = useCallback(() => {
-    setTick((t) => t + 1);
+    setDisplayedTime((prev) => prev + 1000);
   }, []);
 
   // Rerender every second
@@ -25,7 +27,7 @@ const Timer = ({ startTime }: { startTime: Date }) => {
         aria-live="polite"
         aria-label="Elapsed time"
       >
-        {formatDigitalTime(Date.now() - startTime.getTime())}
+        {formatDigitalTime(displayedTime)}
       </span>
     </div>
   );
