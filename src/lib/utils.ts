@@ -92,6 +92,10 @@ export function formatLastSeen(lastSeen: number) {
     return `${Math.floor(diff / (60 * 1000))} minutes ago`;
   } else if (diff < 24 * 60 * 60 * 1000) {
     return `${Math.floor(diff / (60 * 60 * 1000))} hours ago`;
+  } else if (diff < 7 * 24 * 60 * 60 * 1000) {
+    return `${Math.floor(diff / (24 * 60 * 60 * 1000))} days ago`;
+  } else if (diff < 4 * 7 * 24 * 60 * 60 * 1000) {
+    return `${Math.floor(diff / (7 * 24 * 60 * 60 * 1000))} weeks ago`;
   } else {
     return new Date(lastSeen).toLocaleDateString();
   }
