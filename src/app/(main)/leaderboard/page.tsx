@@ -116,7 +116,7 @@ const RankedLeaderboard = async () => {
               <TableCell>{p.user}</TableCell>
               <TableCell className="text-right font-medium">{p.elo}</TableCell>
               <TableCell className="text-right">{p.games}</TableCell>
-              <TableCell className="text-right">{p.winPct}%</TableCell>
+              <TableCell className="text-right">{p.winPct * 100}%</TableCell>
               <TableCell className="text-right pr-6">
                 {formatLastSeen(p.lastSeen)}
               </TableCell>

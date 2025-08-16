@@ -267,7 +267,7 @@ export const backFillUserStats = internalMutation({
           userStats: {
             gamesPlayed: totalGames,
             wins: totalWins,
-            winRate: Number.parseFloat((totalWins / totalGames).toFixed(2)),
+            winRate: Number.parseFloat((totalWins / totalGames).toFixed(3)),
             lastSeen: userGames[0]._creationTime,
           },
         });

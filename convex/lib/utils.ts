@@ -95,7 +95,7 @@ export function getUpdatedStats(
   return {
     gamesPlayed: totalGames,
     wins,
-    winRate: Number.parseFloat((wins / totalGames).toFixed(2)),
+    winRate: Number.parseFloat((wins / totalGames).toFixed(3)),
     lastSeen: Date.now(),
   };
 }
