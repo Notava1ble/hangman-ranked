@@ -8,7 +8,7 @@ import {
 import { getLoggedInUserHelper } from "./auth";
 import { words } from "./data/allWords";
 import { v } from "convex/values";
-import { getEloDelta } from "./lib/utils";
+import { getEloDelta, getUpdatedStats } from "./lib/utils";
 import { internal } from "./_generated/api";
 
 async function getActiveRankedGameHelper(ctx: QueryCtx) {
@@ -36,9 +36,20 @@ async function getActiveRankedGameHelper(ctx: QueryCtx) {
   if (!activeRankedGame) {
     return null;
   }
+
+  const isUser1 = activeRankedGame.userId1 === user._id;
+  const opponent = await ctx.db.get(
+    isUser1 ? activeRankedGame.userId2 : activeRankedGame.userId1
+  );
+
+  if (!opponent) {
+    return null;
+  }
+
   return {
     activeRankedGame,
     user,
+    opponent,
   };
 }
 
@@ -274,7 +285,7 @@ export const makeGuess = mutation({
     if (!data) {
       throw new Error("No active game found");
     }
-    const { activeRankedGame: game, user } = data;
+    const { activeRankedGame: game, user, opponent } = data;
 
     if (game.isCompleted) {
       throw new Error("Game is already completed");
@@ -399,9 +410,11 @@ export const makeGuess = mutation({
       await Promise.all([
         ctx.db.patch(user._id, {
           elo: isUser1 ? user.elo + eloChange : user.elo - eloChange,
+          userStats: getUpdatedStats(user, isWon),
         }),
         ctx.db.patch(opponentId, {
           elo: isUser1 ? opponentElo - eloChange : opponentElo + eloChange,
+          userStats: getUpdatedStats(opponent, !isWon),
         }),
         ctx.db.patch(game._id, { eloChange }),
       ]);
@@ -426,6 +439,15 @@ export const timeoutSchedule = internalMutation({
     if (!game) return;
     if (game.isCompleted) return;
 
+    const user = await db.get(userId);
+    const opponent = await db.get(opponentId);
+
+    if (!user || !opponent) {
+      // Remove the game if either user is not found
+      await db.delete(gameId);
+      return;
+    }
+
     // If the last update differs, dont end the game
     if (isUser1) {
       if (game.lastUpdateFrom1 !== lastUpdate) return;
@@ -434,8 +456,8 @@ export const timeoutSchedule = internalMutation({
     }
 
     // Elo logic
-    const userElo = game[isUser1 ? "userElo1" : "userElo2"];
-    const opponentElo = game[isUser1 ? "userElo2" : "userElo1"];
+    const userElo = user.elo;
+    const opponentElo = opponent.elo;
     const eloChange = getEloDelta(
       isUser1 ? userElo : opponentElo,
       isUser1 ? opponentElo : userElo,
@@ -445,9 +467,17 @@ export const timeoutSchedule = internalMutation({
     await Promise.all([
       db.patch(userId, {
         elo: isUser1 ? userElo + eloChange : userElo - eloChange,
+        userStats: getUpdatedStats(
+          user,
+          false // User lost by timeout
+        ),
       }),
       db.patch(opponentId, {
         elo: isUser1 ? opponentElo - eloChange : opponentElo + eloChange,
+        userStats: getUpdatedStats(
+          opponent,
+          true // Opponent won by timeout
+        ),
       }),
 
       db.patch(gameId, {

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/table";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "../../../../convex/_generated/api";
-import { cn, formatTime } from "@/lib/utils";
+import { cn, formatLastSeen, formatTime } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const revalidate = 1800; // 30 min
@@ -99,15 +99,14 @@ const RankedLeaderboard = async () => {
           <TableHead className="text-right w-[40px]">#</TableHead>
           <TableHead>Player</TableHead>
           <TableHead className="text-right">Elo</TableHead>
-          {/* <TableHead className="text-right">Games</TableHead> */}
-          {/* <TableHead className="text-right">Win%</TableHead> */}
-          {/* <TableHead className="text-right pr-6">Last seen</TableHead> */}
+          <TableHead className="text-right">Games</TableHead>
+          <TableHead className="text-right">Win%</TableHead>
+          <TableHead className="text-right pr-6">Last seen</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {ranked.map((p, idx) => {
           const isEven = (idx + 1) % 2 === 0;
-          // const winPct = p.games ? Math.round((p.wins / p.games) * 100) : 0;
           return (
             <TableRow
               key={p.rank}
@@ -116,11 +115,11 @@ const RankedLeaderboard = async () => {
               <TableCell className="text-right">{p.rank}</TableCell>
               <TableCell>{p.user}</TableCell>
               <TableCell className="text-right font-medium">{p.elo}</TableCell>
-              {/* <TableCell className="text-right">{p.games}</TableCell> */}
-              {/* <TableCell className="text-right">{winPct}%</TableCell> */}
-              {/* <TableCell className="text-right pr-6">
-                {formatTime(p.lastSeen)}
-              </TableCell> */}
+              <TableCell className="text-right">{p.games}</TableCell>
+              <TableCell className="text-right">{p.winPct}%</TableCell>
+              <TableCell className="text-right pr-6">
+                {formatLastSeen(p.lastSeen)}
+              </TableCell>
             </TableRow>
           );
         })}

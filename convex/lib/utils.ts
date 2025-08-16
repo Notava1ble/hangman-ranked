@@ -1,3 +1,5 @@
+import { DataModel } from "../_generated/dataModel";
+
 export function formatTime(ms: number) {
   const totalSeconds = Math.floor(ms / 1000);
   const hours = Math.floor(totalSeconds / 3600);
@@ -77,21 +79,23 @@ export function randomSuffix(length = 6): string {
   return result;
 }
 
-// export function getUpdatedStats(
-//   user: DataModel["users"]["document"],
-//   isWon: boolean
-// ) {
-//   const totalGames = user.userStats ? user.userStats.gamesPlayed + 1 : 1;
-//   const wins = user.userStats
-//     ? isWon
-//       ? user.userStats.wins + 1
-//       : user.userStats.wins
-//     : 1;
+export function getUpdatedStats(
+  user: DataModel["users"]["document"],
+  isWon: boolean
+) {
+  const totalGames = user.userStats ? user.userStats.gamesPlayed + 1 : 1;
+  const wins = user.userStats
+    ? isWon
+      ? user.userStats.wins + 1
+      : user.userStats.wins
+    : isWon
+      ? 1
+      : 0;
 
-//   return {
-//     gamesPlayed: totalGames,
-//     wins,
-//     winRate: wins / totalGames,
-//     lastSeen: Date.now(),
-//   };
-// }
+  return {
+    gamesPlayed: totalGames,
+    wins,
+    winRate: Math.round((wins / totalGames) * 100) / 100,
+    lastSeen: Date.now(),
+  };
+}

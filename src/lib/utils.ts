@@ -74,3 +74,25 @@ export function sum(...args: (number | undefined)[]) {
     return acc;
   }, 0);
 }
+
+export function formatLastSeen(lastSeen: number) {
+  const now = Date.now();
+
+  if (lastSeen === 0) {
+    return "Never";
+  }
+  if (lastSeen > now) {
+    return "Tomorrow";
+  }
+  const diff = now - lastSeen;
+
+  if (diff < 60 * 1000) {
+    return "Just now";
+  } else if (diff < 60 * 60 * 1000) {
+    return `${Math.floor(diff / (60 * 1000))} minutes ago`;
+  } else if (diff < 24 * 60 * 60 * 1000) {
+    return `${Math.floor(diff / (60 * 60 * 1000))} hours ago`;
+  } else {
+    return new Date(lastSeen).toLocaleDateString();
+  }
+}
