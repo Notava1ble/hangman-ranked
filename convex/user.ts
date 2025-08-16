@@ -239,3 +239,39 @@ export const getRecentRankedGames = query({
     });
   },
 });
+
+export const backFillUserStats = internalMutation({
+  handler: async (ctx) => {
+    const users = await ctx.db.query("users").collect();
+    const games = await ctx.db
+      .query("rankedMatches")
+      .withIndex("by_creation_time")
+      .order("desc")
+      .collect();
+    for (const user of users) {
+      if (!user.userStats) {
+        const userGames = games.filter(
+          (game) => game.userId1 === user._id || game.userId2 === user._id
+        );
+
+        if (userGames.length === 0) {
+          continue; // No games played by this user
+        }
+
+        const totalGames = userGames.length;
+        const totalWins = userGames.filter(
+          (game) => game.winnerId === user._id
+        ).length;
+
+        await ctx.db.patch(user._id, {
+          userStats: {
+            gamesPlayed: totalGames,
+            wins: totalWins,
+            winRate: Math.round((totalWins / totalGames) * 100) / 100,
+            lastSeen: userGames[0]._creationTime,
+          },
+        });
+      }
+    }
+  },
+});
