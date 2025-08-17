@@ -59,6 +59,12 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
           lowercaseName,
           image,
           elo: 1200,
+          userStats: {
+            gamesPlayed: 0,
+            wins: 0,
+            winRate: 0,
+            lastSeen: Date.now(),
+          },
         });
 
         return userId;
@@ -81,6 +87,12 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
         lowercaseName: finalName.toLowerCase(),
         image,
         elo: 1200,
+        userStats: {
+          gamesPlayed: 0,
+          wins: 0,
+          winRate: 0,
+          lastSeen: Date.now(),
+        },
       });
 
       return userId;

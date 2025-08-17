@@ -13,6 +13,7 @@ import {
 } from "./ui/table";
 import Container from "./Container";
 import LineChartComponent from "./LineChart";
+import { getEloProgression } from "@/lib/utils";
 
 export type PreloadedRecentSoloGamesType = Preloaded<
   typeof api.user.getRecentSoloGames
@@ -77,17 +78,7 @@ export const RecentRankedGames = ({
 }) => {
   const recentGames = usePreloadedQuery(preloadedRecentGames);
 
-  let currentElo = 1200;
-  const eloProgression = [
-    { game: "0", elo: "1200" },
-    ...recentGames
-      .slice()
-      .reverse()
-      .map(({ eloChange }, idx) => {
-        currentElo += eloChange ?? 0;
-        return { game: (idx + 1).toString(), elo: currentElo.toString() };
-      }),
-  ];
+  const eloProgression = getEloProgression(recentGames);
 
   return (
     <>
@@ -139,22 +130,34 @@ export const RecentRankedGames = ({
         </Table>
       </Container>
       {eloProgression.length > 3 && (
-        <Container>
-          <LineChartComponent
-            chartConfig={{
-              elo: {
-                label: "Elo",
-                color: "var(--chart-3)",
-              },
-            }}
-            chartData={eloProgression}
-            lineType="linear"
-            yDomain={["dataMin", "dataMax"]}
-            yPadding={{ bottom: 20, top: 20 }}
-          />
-        </Container>
+        <RankedGamesGraph eloProgression={eloProgression} />
       )}
     </>
   );
 };
-export default RecentRankedGames;
+
+export const RankedGamesGraph = ({
+  eloProgression,
+}: {
+  eloProgression: {
+    game: string;
+    elo: string;
+  }[];
+}) => {
+  return (
+    <Container>
+      <LineChartComponent
+        chartConfig={{
+          elo: {
+            label: "Elo",
+            color: "var(--chart-3)",
+          },
+        }}
+        chartData={eloProgression}
+        lineType="linear"
+        yDomain={["dataMin", "dataMax"]}
+        yPadding={{ bottom: 20, top: 20 }}
+      />
+    </Container>
+  );
+};

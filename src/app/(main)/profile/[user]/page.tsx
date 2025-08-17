@@ -1,5 +1,70 @@
+import Container from "@/components/Container";
+import { fetchQuery } from "convex/nextjs";
+import { api } from "../../../../../convex/_generated/api";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Edit } from "lucide-react";
+import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
+import { formatLastSeen, getEloProgression } from "@/lib/utils";
+import { redirect } from "next/navigation";
+import { RankedGamesGraph } from "@/components/RecentGames";
+
 const Page = async ({ params }: { params: Promise<{ user: string }> }) => {
   const { user } = await params;
-  return <div>Profile Page for {user}</div>;
+
+  const userInfo = await fetchQuery(
+    api.user.getUserProfile,
+    {
+      userName: user,
+    },
+    { token: await convexAuthNextjsToken() }
+  ).catch(() => {
+    redirect("/not-found");
+  });
+
+  const { recentGames } = userInfo;
+
+  return (
+    <div className="w-full h-full mb-12">
+      <Container className="relative">
+        <div className="flex gap-4">
+          <Avatar className="size-18 rounded-lg">
+            <AvatarImage src={userInfo.image} />
+            <AvatarFallback></AvatarFallback>
+          </Avatar>
+          <div className="space-y-2">
+            <div>
+              {/* Temporary rank. Color text based or rank */}
+              <h1 className="font-semibold text-4xl align-middle">
+                {userInfo.name}
+              </h1>
+              <p className="text-xl">
+                <span className="text-green-800">
+                  {/* Add the rank image (diamond is placeholder) */}
+                  💎 Intermediate [{userInfo.elo}]
+                </span>{" "}
+                <span>#12</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="mt-3">
+          <p>Account created: {formatLastSeen(userInfo.accountCreated)}</p>
+          <p>Last seen: {formatLastSeen(userInfo.userStats.lastSeen)}</p>
+          {userInfo.personalScoreRecord && (
+            <p>Personal best: {userInfo.personalScoreRecord}</p>
+          )}
+        </div>
+        {userInfo.isSelf && (
+          <Button variant="outline" className="absolute top-4 right-4">
+            <Edit /> Edit
+          </Button>
+        )}
+      </Container>
+      {recentGames.length > 3 && (
+        <RankedGamesGraph eloProgression={getEloProgression(recentGames)} />
+      )}
+    </div>
+  );
 };
 export default Page;

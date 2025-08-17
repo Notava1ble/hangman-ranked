@@ -1,7 +1,9 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { internalMutation, query } from "./_generated/server";
+import { internalMutation, query, QueryCtx } from "./_generated/server";
 import { getLoggedInUserHelper } from "./auth";
 import { sum, countLetters, formatDigitalTime } from "./lib/utils";
+import { v } from "convex/values";
+import { Id } from "./_generated/dataModel";
 
 export const getUserStats = query({
   handler: async (ctx) => {
@@ -193,50 +195,59 @@ export const backfillElo = internalMutation({
   },
 });
 
+export const getRecentRankedGamesHelper = async (
+  ctx: QueryCtx,
+  userId: Id<"users"> | undefined
+) => {
+  const user = userId
+    ? await ctx.db.get(userId)
+    : await getLoggedInUserHelper(ctx);
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  // Fetch completed matches where the user is userId1
+  const matches1 = await ctx.db
+    .query("rankedMatches")
+    .withIndex("by_user1", (q) => q.eq("userId1", user._id))
+    .filter((q) => q.eq(q.field("isCompleted"), true))
+    .order("desc")
+    .collect();
+
+  const matches2 = await ctx.db
+    .query("rankedMatches")
+    .withIndex("by_user2", (q) => q.eq("userId2", user._id))
+    .filter((q) => q.eq(q.field("isCompleted"), true))
+    .order("desc")
+    .collect();
+
+  // Merge and find the most recent one based on endTime
+  const allMatches = [...matches1, ...matches2];
+  const mostRecent = allMatches
+    .filter((m) => m.endTime !== undefined)
+    .sort((a, b) => (b.endTime ?? 0) - (a.endTime ?? 0));
+
+  return mostRecent.map((match) => {
+    const isUser1 = match.userId1 === user._id;
+    const opponent = isUser1 ? match.userName2 : match.userName1;
+
+    return {
+      _id: match._id,
+      opponent,
+      word: match.word,
+      mistakes: isUser1 ? match.mistakes1 : match.mistakes2,
+      attempts: isUser1 ? match.attempts1 : match.attempts2,
+      winner: match.winner,
+      eloChange: isUser1 ? match.eloChange : -(match.eloChange ?? 0),
+      hasUserWon: match.winnerId === (isUser1 ? match.userId1 : match.userId2),
+    };
+  });
+};
+
 export const getRecentRankedGames = query({
-  handler: async (ctx) => {
-    const user = await getLoggedInUserHelper(ctx);
-    if (!user) {
-      throw new Error("User not authenticated");
-    }
-
-    // Fetch completed matches where the user is userId1
-    const matches1 = await ctx.db
-      .query("rankedMatches")
-      .withIndex("by_user1", (q) => q.eq("userId1", user._id))
-      .filter((q) => q.eq(q.field("isCompleted"), true))
-      .order("desc")
-      .collect();
-
-    const matches2 = await ctx.db
-      .query("rankedMatches")
-      .withIndex("by_user2", (q) => q.eq("userId2", user._id))
-      .filter((q) => q.eq(q.field("isCompleted"), true))
-      .order("desc")
-      .collect();
-
-    // Merge and find the most recent one based on endTime
-    const allMatches = [...matches1, ...matches2];
-    const mostRecent = allMatches
-      .filter((m) => m.endTime !== undefined)
-      .sort((a, b) => (b.endTime ?? 0) - (a.endTime ?? 0));
-
-    return mostRecent.map((match) => {
-      const isUser1 = match.userId1 === user._id;
-      const opponent = isUser1 ? match.userName2 : match.userName1;
-
-      return {
-        _id: match._id,
-        opponent,
-        word: match.word,
-        mistakes: isUser1 ? match.mistakes1 : match.mistakes2,
-        attempts: isUser1 ? match.attempts1 : match.attempts2,
-        winner: match.winner,
-        eloChange: isUser1 ? match.eloChange : -(match.eloChange ?? 0),
-        hasUserWon:
-          match.winnerId === (isUser1 ? match.userId1 : match.userId2),
-      };
-    });
+  args: { userId: v.optional(v.id("users")) },
+  handler: async (ctx, { userId }) => {
+    return await getRecentRankedGamesHelper(ctx, userId);
   },
 });
 
@@ -254,10 +265,6 @@ export const backFillUserStats = internalMutation({
           (game) => game.userId1 === user._id || game.userId2 === user._id
         );
 
-        if (userGames.length === 0) {
-          continue; // No games played by this user
-        }
-
         const totalGames = userGames.length;
         const totalWins = userGames.filter(
           (game) => game.winnerId === user._id
@@ -267,8 +274,14 @@ export const backFillUserStats = internalMutation({
           userStats: {
             gamesPlayed: totalGames,
             wins: totalWins,
-            winRate: Number.parseFloat((totalWins / totalGames).toFixed(3)),
-            lastSeen: userGames[0]._creationTime,
+            winRate:
+              totalGames !== 0
+                ? Number.parseFloat((totalWins / totalGames).toFixed(3))
+                : 0,
+            lastSeen:
+              userGames.length > 0
+                ? userGames[0]._creationTime
+                : user._creationTime,
           },
         });
       }
@@ -286,5 +299,38 @@ export const backfillLowercaseName = internalMutation({
         });
       }
     }
+  },
+});
+
+export const getUserProfile = query({
+  args: { userName: v.string() },
+  handler: async (ctx, { userName }) => {
+    const requestingUser = await getLoggedInUserHelper(ctx);
+    const user = await ctx.db
+      .query("users")
+      .withIndex("name", (q) => q.eq("name", userName))
+      .unique();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const recentGames = await getRecentRankedGamesHelper(ctx, user._id);
+
+    return {
+      accountCreated: user._creationTime,
+      name: user.name,
+      elo: user.elo || 1200, // Default Elo rating if not set
+      image: user.image,
+      personalScoreRecord: user.personalScoreRecord,
+      userStats: user.userStats || {
+        gamesPlayed: 0,
+        wins: 0,
+        winRate: 0,
+        lastSeen: 0,
+      },
+      recentGames,
+      isSelf: requestingUser ? requestingUser._id === user._id : false,
+    };
   },
 });

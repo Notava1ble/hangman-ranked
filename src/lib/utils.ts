@@ -1,6 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { words } from "./allWords";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -75,6 +77,13 @@ export function sum(...args: (number | undefined)[]) {
   }, 0);
 }
 
+const minute = 60 * 1000;
+const hour = 60 * minute;
+const day = 24 * hour;
+const week = 7 * day;
+const month = 30 * day; // approximate
+const year = 365 * day; // approximate
+
 export function formatLastSeen(lastSeen: number) {
   const now = Date.now();
 
@@ -84,19 +93,47 @@ export function formatLastSeen(lastSeen: number) {
   if (lastSeen > now) {
     return "Tomorrow";
   }
+
   const diff = now - lastSeen;
 
-  if (diff < 60 * 1000) {
+  if (diff < minute) {
     return "Just now";
-  } else if (diff < 60 * 60 * 1000) {
-    return `${Math.floor(diff / (60 * 1000))} minutes ago`;
-  } else if (diff < 24 * 60 * 60 * 1000) {
-    return `${Math.floor(diff / (60 * 60 * 1000))} hours ago`;
-  } else if (diff < 7 * 24 * 60 * 60 * 1000) {
-    return `${Math.floor(diff / (24 * 60 * 60 * 1000))} days ago`;
-  } else if (diff < 4 * 7 * 24 * 60 * 60 * 1000) {
-    return `${Math.floor(diff / (7 * 24 * 60 * 60 * 1000))} weeks ago`;
+  } else if (diff < hour) {
+    const minutes = Math.floor(diff / minute);
+    return `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`;
+  } else if (diff < day) {
+    const hours = Math.floor(diff / hour);
+    return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
+  } else if (diff < week) {
+    const days = Math.floor(diff / day);
+    return `${days} ${days === 1 ? "day" : "days"} ago`;
+  } else if (diff < 4 * week) {
+    const weeks = Math.floor(diff / week);
+    return `${weeks} ${weeks === 1 ? "week" : "weeks"} ago`;
+  } else if (diff < year) {
+    const months = Math.floor(diff / month);
+    return `${months} ${months === 1 ? "month" : "months"} ago`;
   } else {
-    return new Date(lastSeen).toLocaleDateString();
+    const years = Math.floor(diff / year);
+    return `${years} ${years === 1 ? "year" : "years"} ago`;
   }
+}
+
+export function getEloProgression(
+  recentGames: NonNullable<
+    Awaited<ReturnType<typeof useQuery<typeof api.user.getRecentRankedGames>>>
+  >
+) {
+  let currentElo = 1200;
+  const eloProgression = [
+    { game: "0", elo: "1200" },
+    ...recentGames
+      .slice()
+      .reverse()
+      .map(({ eloChange }, idx) => {
+        currentElo += eloChange ?? 0;
+        return { game: (idx + 1).toString(), elo: currentElo.toString() };
+      }),
+  ];
+  return eloProgression;
 }

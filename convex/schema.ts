@@ -80,14 +80,13 @@ export default defineSchema({
     lowercaseName: v.optional(v.string()),
     phone: v.optional(v.string()),
     phoneVerificationTime: v.optional(v.float64()),
-    userStats: v.optional(
-      v.object({
-        gamesPlayed: v.number(),
-        wins: v.number(),
-        winRate: v.number(),
-        lastSeen: v.number(),
-      })
-    ),
+    personalScoreRecord: v.optional(v.number()),
+    userStats: v.object({
+      gamesPlayed: v.number(),
+      wins: v.number(),
+      winRate: v.number(),
+      lastSeen: v.number(),
+    }),
   })
     .index("phone", ["phone"])
     .index("email", ["email"])

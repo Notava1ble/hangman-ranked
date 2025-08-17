@@ -214,6 +214,16 @@ export const makeGuess = mutation({
     });
 
     if (isCompleted) {
+      if (isWon) {
+        const user = await ctx.db.get(game.userId);
+        if (!user) {
+          throw new Error("User not found");
+        }
+
+        await ctx.db.patch(game.userId, {
+          personalScoreRecord: Math.max(user.personalScoreRecord ?? 0, score),
+        });
+      }
       return {
         isCompleted,
         isWon,
