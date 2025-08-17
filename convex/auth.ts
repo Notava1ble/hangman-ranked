@@ -31,9 +31,9 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
       // Validate name for password provider
       if (args.provider.id === "password" && args.profile.name) {
         const name = (args.profile.name as string).trim();
-        const normalizedName = name.toLowerCase();
+        const lowercaseName = name.toLowerCase();
 
-        if (notAllowedUsernames.has(normalizedName)) {
+        if (notAllowedUsernames.has(lowercaseName)) {
           throw new ConvexError("This username is not allowed");
         }
         if (!/^[A-Za-z][a-z0-9_]+$/.test(name)) {
@@ -42,8 +42,8 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
 
         const sameNameUser = await ctx.db
           .query("users")
-          .withIndex("normalized_name", (q) =>
-            q.eq("normalizedName", normalizedName)
+          .withIndex("lowercase_name", (q) =>
+            q.eq("lowercaseName", lowercaseName)
           )
           .unique();
         if (sameNameUser) {
@@ -56,7 +56,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
           email,
           phone,
           name,
-          normalizedName,
+          lowercaseName,
           image,
           elo: 1200,
         });
@@ -78,7 +78,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
         email,
         phone,
         name: finalName,
-        normalizedName: finalName.toLowerCase(),
+        lowercaseName: finalName.toLowerCase(),
         image,
         elo: 1200,
       });
@@ -114,7 +114,9 @@ export async function generateUniqueName(
   while (
     await ctx.db
       .query("users")
-      .withIndex("name", (q) => q.eq("name", finalName))
+      .withIndex("lowercase_name", (q) =>
+        q.eq("lowercaseName", finalName.toLowerCase())
+      )
       .unique()
   ) {
     if (attempts >= maxAttempts) {
