@@ -12,5 +12,8 @@
 - [x] Make the timer visable in mobile
 - [ ] Prevent explicit words from usernames
 - [x] Add the option to leave matchmaking
+- [ ] Make the active tab persist when refreshing in leaderboard
   
 - [ ] Improve the ui/ux
+- [ ] Rewrite code for clearability and mentainability
+- [ ] Handle convex errors and implement better responses

@@ -6,6 +6,7 @@ import { MutationCtx, query, QueryCtx } from "./_generated/server";
 import { randomSuffix } from "./lib/utils";
 import { ConvexError } from "convex/values";
 import CustomEmail from "./lib/CustomEmail";
+import { notAllowedUsernames } from "./data/notAllowedUsernames";
 
 export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
   providers: [GitHub, Google, CustomEmail],
@@ -27,9 +28,16 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
       // const phoneVerificationTime =
       //   args.profile.phoneVerified === true ? Date.now() : undefined;
 
-      // Check if email is already taken
+      // Check if name is already taken
       if (args.provider.id === "password" && args.profile.name) {
         const name = (args.profile.name as string).toLowerCase();
+
+        if (notAllowedUsernames.has(name.toLowerCase())) {
+          throw new ConvexError("This username is not allowed");
+        }
+        if (!/^[A-Za-z0-9_]+$/.test(name)) {
+          throw new ConvexError("Invalid characters");
+        }
 
         const sameNameUser = await ctx.db
           .query("users")
@@ -38,6 +46,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
         if (sameNameUser) {
           throw new ConvexError("This username is taken");
         }
+
         const image = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
 
         const userId = await ctx.db.insert("users", {

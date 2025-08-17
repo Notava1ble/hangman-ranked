@@ -87,6 +87,24 @@ export default function LoginPage() {
                         setFieldErrors({ name: ["This username is taken"] });
                         return;
                       }
+                      if (
+                        (e as Error).message.includes(
+                          "This username is not allowed"
+                        )
+                      ) {
+                        setFieldErrors({
+                          name: ["This username is not allowed"],
+                        });
+                        return;
+                      }
+                      if ((e as Error).message.includes("Invalid characters")) {
+                        setFieldErrors({
+                          name: [
+                            "Only letters, numbers, and underscores are allowed",
+                          ],
+                        });
+                        return;
+                      }
                       const errorMessage =
                         step === "signUp"
                           ? "Failed to create account. Please check your information and try again."

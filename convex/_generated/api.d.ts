@@ -15,6 +15,7 @@ import type {
 } from "convex/server";
 import type * as auth from "../auth.js";
 import type * as data_allWords from "../data/allWords.js";
+import type * as data_notAllowedUsernames from "../data/notAllowedUsernames.js";
 import type * as game from "../game.js";
 import type * as http from "../http.js";
 import type * as leaderboard from "../leaderboard.js";
@@ -35,6 +36,7 @@ import type * as user from "../user.js";
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   "data/allWords": typeof data_allWords;
+  "data/notAllowedUsernames": typeof data_notAllowedUsernames;
   game: typeof game;
   http: typeof http;
   leaderboard: typeof leaderboard;
