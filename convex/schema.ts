@@ -77,6 +77,7 @@ export default defineSchema({
     image: v.optional(v.string()),
     isAnonymous: v.optional(v.boolean()),
     name: v.optional(v.string()),
+    normalizedName: v.optional(v.string()),
     phone: v.optional(v.string()),
     phoneVerificationTime: v.optional(v.float64()),
     userStats: v.optional(
@@ -91,5 +92,6 @@ export default defineSchema({
     .index("phone", ["phone"])
     .index("email", ["email"])
     .index("name", ["name"])
+    .index("normalized_name", ["normalizedName"])
     .index("by_elo", ["elo"]),
 });

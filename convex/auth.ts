@@ -30,9 +30,10 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
 
       // Validate name for password provider
       if (args.provider.id === "password" && args.profile.name) {
-        const name = (args.profile.name as string).trim().toLowerCase();
+        const name = (args.profile.name as string).trim();
+        const normalizedName = name.toLowerCase();
 
-        if (notAllowedUsernames.has(name)) {
+        if (notAllowedUsernames.has(normalizedName)) {
           throw new ConvexError("This username is not allowed");
         }
         if (!/^[A-Za-z][a-z0-9_]+$/.test(name)) {
@@ -41,7 +42,9 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
 
         const sameNameUser = await ctx.db
           .query("users")
-          .withIndex("name", (q) => q.eq("name", name))
+          .withIndex("normalized_name", (q) =>
+            q.eq("normalizedName", normalizedName)
+          )
           .unique();
         if (sameNameUser) {
           throw new ConvexError("This username is taken");
@@ -53,6 +56,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
           email,
           phone,
           name,
+          normalizedName,
           image,
           elo: 1200,
         });
@@ -74,6 +78,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
         email,
         phone,
         name: finalName,
+        normalizedName: finalName.toLowerCase(),
         image,
         elo: 1200,
       });
@@ -91,8 +96,7 @@ export async function generateUniqueName(
     .trim()
     .replace(/-/g, "_")
     .replace(/\s+/g, "_")
-    .replace(/[^a-zA-Z0-9_]/g, "")
-    .toLowerCase();
+    .replace(/[^a-zA-Z0-9_]/g, "");
 
   normalized = normalized.split("_")[0];
   // Ensure it’s not empty after normalization
