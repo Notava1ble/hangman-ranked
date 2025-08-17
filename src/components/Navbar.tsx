@@ -35,14 +35,15 @@ const Navbar = () => {
                   }}
                   variant="link"
                 >
-                  {" "}
                   Sign Out
                 </Button>
-                <Avatar>
-                  {/* Show a better placeholder when there's no image */}
-                  <AvatarImage src={user?.image} />
-                  <AvatarFallback />
-                </Avatar>
+                <Link href={`/profile/${user?.name}`}>
+                  <Avatar>
+                    {/* Show a better placeholder when there's no image */}
+                    <AvatarImage src={user?.image} />
+                    <AvatarFallback />
+                  </Avatar>
+                </Link>
               </Authenticated>
               <Unauthenticated>
                 <Button variant="default" asChild>
@@ -98,10 +99,12 @@ const Navbar = () => {
             >
               Sign Out
             </Button>
-            <Avatar>
-              <AvatarImage src={user?.image} />
-              <AvatarFallback />
-            </Avatar>
+            <Link href={`/profile/${user?.name}`}>
+              <Avatar>
+                <AvatarImage src={user?.image} />
+                <AvatarFallback />
+              </Avatar>
+            </Link>
           </Authenticated>
           <Unauthenticated>
             <Button variant="default" asChild>

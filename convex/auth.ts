@@ -36,7 +36,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
         if (notAllowedUsernames.has(lowercaseName)) {
           throw new ConvexError("This username is not allowed");
         }
-        if (!/^[A-Za-z][a-z0-9_]+$/.test(name)) {
+        if (!/^[A-Za-z][A-Za-z0-9_]+$/.test(name)) {
           throw new ConvexError("Invalid characters");
         }
 
