@@ -10,6 +10,7 @@ import { fetchQuery } from "convex/nextjs";
 import { api } from "../../../../convex/_generated/api";
 import { cn, formatLastSeen, formatTime } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Link from "next/link";
 
 export const revalidate = 1800; // 30 min
 
@@ -113,7 +114,9 @@ const RankedLeaderboard = async () => {
               className={cn("hover:bg-indigo-200", isEven && "bg-indigo-50")}
             >
               <TableCell className="text-right">{p.rank}</TableCell>
-              <TableCell>{p.user}</TableCell>
+              <TableCell>
+                <Link href={`profile/${p.user}`}>{p.user}</Link>
+              </TableCell>
               <TableCell className="text-right font-medium">{p.elo}</TableCell>
               <TableCell className="text-right">{p.games}</TableCell>
               <TableCell className="text-right">
@@ -154,7 +157,7 @@ const SoloLeaderboard = async () => {
               className={cn("hover:bg-indigo-200", isEven && "bg-indigo-50")}
             >
               <TableCell className="text-right">{game.rank}</TableCell>
-              <TableCell>{game.user}</TableCell>
+              <Link href={`profile/${game.user}`}>{game.user}</Link>
               <TableCell className="text-right">{game.score}</TableCell>
               <TableCell className="text-center">{game.word}</TableCell>
               <TableCell className="text-right max-sm:hidden">
