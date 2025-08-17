@@ -233,12 +233,6 @@ export const makeGuess = mutation({
         timeTaken: totalTime,
       };
     }
-    // If game is completed and won, add to leaderboard and update user stats
-    // Use the following structure
-
-    // if (isCompleted && isWon) {
-    //  await ctx.runMutation(api.leaderboard.addEntry ....
-    //  await ctx.runMutation(api.users.updateStats ...);
   },
 });
 

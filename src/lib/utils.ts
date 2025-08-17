@@ -91,6 +91,8 @@ export function formatLastSeen(lastSeen: number) {
     return "Never";
   }
   if (lastSeen > now) {
+    const future = lastSeen - now;
+    if (future < minute) return "Just now"; // tolerate minor clock skew
     return "Tomorrow";
   }
 

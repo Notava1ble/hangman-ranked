@@ -30,14 +30,12 @@ const Page = async ({ params }: { params: Promise<{ user: string }> }) => {
         <div className="flex gap-4">
           <Avatar className="size-18 rounded-lg">
             <AvatarImage src={userInfo.image} />
-            <AvatarFallback></AvatarFallback>
+            <AvatarFallback />
           </Avatar>
           <div className="space-y-2">
             <div>
               {/* Temporary rank. Color text based or rank */}
-              <h1 className="font-semibold text-4xl align-middle">
-                {userInfo.name}
-              </h1>
+              <h1 className="font-semibold text-4xl">{userInfo.name}</h1>
               <p className="text-xl">
                 <span className="text-green-800">
                   {/* Add the rank image (diamond is placeholder) */}
