@@ -275,3 +275,16 @@ export const backFillUserStats = internalMutation({
     }
   },
 });
+
+export const backfillLowercaseName = internalMutation({
+  handler: async (ctx) => {
+    const users = await ctx.db.query("users").collect();
+    for (const user of users) {
+      if (!user.lowercaseName) {
+        await ctx.db.patch(user._id, {
+          lowercaseName: user.name?.toLowerCase() || "",
+        });
+      }
+    }
+  },
+});
