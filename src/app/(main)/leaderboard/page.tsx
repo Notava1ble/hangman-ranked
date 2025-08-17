@@ -157,7 +157,9 @@ const SoloLeaderboard = async () => {
               className={cn("hover:bg-indigo-200", isEven && "bg-indigo-50")}
             >
               <TableCell className="text-right">{game.rank}</TableCell>
-              <Link href={`profile/${game.user}`}>{game.user}</Link>
+              <TableCell>
+                <Link href={`profile/${game.user}`}>{game.user}</Link>
+              </TableCell>
               <TableCell className="text-right">{game.score}</TableCell>
               <TableCell className="text-center">{game.word}</TableCell>
               <TableCell className="text-right max-sm:hidden">
