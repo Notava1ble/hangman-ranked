@@ -100,7 +100,7 @@ export default function LoginPage() {
                       if ((e as Error).message.includes("Invalid characters")) {
                         setFieldErrors({
                           name: [
-                            "Only letters, numbers, and underscores are allowed",
+                            "The username can only contain letters, numbers, and underscores. It must start with a letter",
                           ],
                         });
                         return;

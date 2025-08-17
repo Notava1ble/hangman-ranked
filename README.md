@@ -10,10 +10,12 @@
 - [ ] Add the feature to sort leaderboard for time and score aswell
 - [x] Add a leaderboard for ranked
 - [x] Make the timer visable in mobile
-- [ ] Prevent explicit words from usernames
+- [x] Prevent explicit words from usernames
+- [ ] Add a report system
 - [x] Add the option to leave matchmaking
 - [ ] Make the active tab persist when refreshing in leaderboard
+- [ ] Add the profile page, where you can view details about other players, and if the profile is yours, you have the option to delete the profile and change the name
   
-- [ ] Improve the ui/ux
-- [ ] Rewrite code for clearability and mentainability
-- [ ] Handle convex errors and implement better responses
+- [ ] Improve the UI/UX
+- [ ] Refactor code for clarity and maintainability
+- [ ] Handle Convex errors and implement better responses

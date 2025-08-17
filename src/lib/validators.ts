@@ -5,8 +5,8 @@ export const credentialValidator = z.object({
   name: z
     .string()
     .regex(
-      /^[A-Za-z0-9_]+$/,
-      "Only letters, numbers, and underscores are allowed"
+      /^[A-Za-z][A-Za-z0-9_]+$/,
+      "The username can only contain letters, numbers, and underscores. It must start with a letter"
     )
     .min(3, "The username must not be shorter than 3 characters")
     .max(20, "The username must not be longer than 20 characters"),

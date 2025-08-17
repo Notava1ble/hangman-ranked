@@ -28,14 +28,14 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
       // const phoneVerificationTime =
       //   args.profile.phoneVerified === true ? Date.now() : undefined;
 
-      // Check if name is already taken
+      // Validate name for password provider
       if (args.provider.id === "password" && args.profile.name) {
-        const name = (args.profile.name as string).toLowerCase();
+        const name = (args.profile.name as string).trim().toLowerCase();
 
-        if (notAllowedUsernames.has(name.toLowerCase())) {
+        if (notAllowedUsernames.has(name)) {
           throw new ConvexError("This username is not allowed");
         }
-        if (!/^[A-Za-z0-9_]+$/.test(name)) {
+        if (!/^[A-Za-z][a-z0-9_]+$/.test(name)) {
           throw new ConvexError("Invalid characters");
         }
 
