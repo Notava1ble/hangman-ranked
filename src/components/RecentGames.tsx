@@ -140,8 +140,8 @@ export const RankedGamesGraph = ({
   eloProgression,
 }: {
   eloProgression: {
-    game: string;
-    elo: string;
+    game: number;
+    elo: number;
   }[];
 }) => {
   return (

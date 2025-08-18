@@ -128,13 +128,13 @@ export function getEloProgression(
 ) {
   let currentElo = 1000;
   const eloProgression = [
-    { game: "0", elo: "1000" },
+    { game: 0, elo: 1000 },
     ...recentGames
       .slice()
       .reverse()
       .map(({ eloChange }, idx) => {
         currentElo += eloChange ?? 0;
-        return { game: (idx + 1).toString(), elo: currentElo.toString() };
+        return { game: idx + 1, elo: currentElo }; // <-- numbers
       }),
   ];
   return eloProgression;

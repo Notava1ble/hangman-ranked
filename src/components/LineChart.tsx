@@ -58,14 +58,15 @@ const LineChartComponent = ({
             tickLine={false}
             axisLine={true}
             tickMargin={8}
-            tickFormatter={(value) => value.slice(0, 3)}
           />
           <YAxis
+            type="number"
             tickLine={false}
             axisLine={false}
             tickMargin={8}
             domain={yDomain}
             padding={yPadding}
+            allowDecimals={false}
           />
 
           <ChartTooltip
