@@ -41,7 +41,7 @@ const Page = async ({ params }: { params: Promise<{ user: string }> }) => {
                   {/* Add the rank image (diamond is placeholder) */}
                   💎 {getRankFromElo(userInfo.elo)} [{userInfo.elo}]
                 </span>{" "}
-                <span>#12</span>
+                <span>#{userInfo.rank}</span>
               </p>
             </div>
           </div>

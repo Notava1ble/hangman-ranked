@@ -39,6 +39,14 @@ export const getEloLeaderboard = query({
       .order("desc")
       .take(100);
 
+    topEloPlayers.sort((a, b) => {
+      if (b.elo !== a.elo) return b.elo - a.elo;
+      const gamesA = a.userStats.gamesPlayed;
+      const gamesB = b.userStats.gamesPlayed;
+      if (gamesB !== gamesA) return gamesB - gamesA;
+      return a._creationTime - b._creationTime;
+    });
+
     return topEloPlayers.map((player, i) => {
       return {
         rank: i + 1,

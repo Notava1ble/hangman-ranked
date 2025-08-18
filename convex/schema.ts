@@ -92,5 +92,6 @@ export default defineSchema({
     .index("email", ["email"])
     .index("name", ["name"])
     .index("lowercase_name", ["lowercaseName"])
-    .index("by_elo", ["elo"]),
+    .index("by_elo", ["elo"])
+    .index("by_elo_games_played", ["elo", "userStats.gamesPlayed"]),
 });

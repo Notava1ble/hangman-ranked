@@ -317,10 +317,49 @@ export const getUserProfile = query({
 
     const recentGames = await getRecentRankedGamesHelper(ctx, user._id);
 
+    const higherEloPlayersQuery = ctx.db
+      .query("users")
+      .withIndex("by_elo", (q) => q.gt("elo", user.elo))
+      .order("desc");
+
+    const sameEloPlayersButMoreGamesPlayedQuery = ctx.db
+      .query("users")
+      .withIndex("by_elo_games_played", (q) =>
+        q
+          .eq("elo", user.elo)
+          .gt("userStats.gamesPlayed", user.userStats.gamesPlayed)
+      )
+      .order("desc");
+
+    const sameEloPlayersAndSameGamesPlayedButOlderAccountsQuery = ctx.db
+      .query("users")
+      .withIndex("by_elo_games_played", (q) =>
+        q
+          .eq("elo", user.elo)
+          .eq("userStats.gamesPlayed", user.userStats.gamesPlayed)
+          .lt("_creationTime", user._creationTime)
+      )
+      .order("desc");
+
+    const [
+      higherEloPlayers,
+      sameEloPlayersButMoreGamesPlayed,
+      sameEloPlayersAndSameGamesPlayedButOlderAccounts,
+    ] = await Promise.all([
+      higherEloPlayersQuery.collect(),
+      sameEloPlayersButMoreGamesPlayedQuery.collect(),
+      sameEloPlayersAndSameGamesPlayedButOlderAccountsQuery.collect(),
+    ]);
+
     return {
       accountCreated: user._creationTime,
       name: user.name,
-      elo: user.elo || 1200, // Default Elo rating if not set
+      elo: user.elo,
+      rank:
+        higherEloPlayers.length +
+        sameEloPlayersButMoreGamesPlayed.length +
+        sameEloPlayersAndSameGamesPlayedButOlderAccounts.length +
+        1,
       image: user.image,
       personalScoreRecord: user.personalScoreRecord,
       userStats: user.userStats || {
