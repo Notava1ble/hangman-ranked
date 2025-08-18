@@ -11,6 +11,7 @@ import {
   RankedGamesGraph,
   RecentRankedGamesTable,
 } from "@/components/RecentGames";
+import LinkBtn from "@/components/LinkBtn";
 
 const Page = async ({ params }: { params: Promise<{ user: string }> }) => {
   const { user } = await params;
@@ -61,9 +62,9 @@ const Page = async ({ params }: { params: Promise<{ user: string }> }) => {
             <Button variant="outline">
               <Edit /> Edit
             </Button>
-            <Button variant="primary">
+            <LinkBtn variant="primary" href="/stats">
               <LineChart /> Stats
-            </Button>
+            </LinkBtn>
           </div>
         )}
       </Container>
