@@ -128,7 +128,7 @@ export function getEloProgression(
 ) {
   let currentElo = 1000;
   const eloProgression = [
-    { game: "0", elo: "1200" },
+    { game: "0", elo: "1000" },
     ...recentGames
       .slice()
       .reverse()

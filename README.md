@@ -13,7 +13,7 @@
 - [x] Prevent explicit words from usernames
 - [ ] Add a report system
 - [x] Add the option to leave matchmaking
-- [ ] Make the active tab persist when refreshing in leaderboard
+- [ ] Make leaderboard split in two routes (elo and solo) so it can persist the type of leaderboard showing between refreshes
 - [ ] Add the profile page, where you can view details about other players, and if the profile is yours, you have the option to delete the profile and change the name
   
 - [ ] Improve the UI/UX
