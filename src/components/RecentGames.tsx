@@ -157,6 +157,12 @@ export const RankedGamesGraph = ({
         lineType="linear"
         yDomain={["dataMin", "dataMax"]}
         yPadding={{ bottom: 20, top: 20 }}
+        dot={{
+          fill: "var(--chart-3)",
+        }}
+        activeDot={{
+          r: 6,
+        }}
       />
     </Container>
   );

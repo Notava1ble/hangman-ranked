@@ -9,14 +9,16 @@ import {
 import { cn } from "@/lib/utils";
 import {
   CartesianGrid,
+  DotProps,
   Line,
   LineChart,
   ResponsiveContainer,
   XAxis,
   YAxis,
 } from "recharts";
+import { LineDot } from "recharts/types/cartesian/Line";
 import { CurveType } from "recharts/types/shape/Curve";
-import { AxisDomain } from "recharts/types/util/types";
+import { ActiveShape, AxisDomain } from "recharts/types/util/types";
 
 const LineChartComponent = ({
   chartConfig,
@@ -25,6 +27,8 @@ const LineChartComponent = ({
   className,
   yDomain,
   yPadding,
+  dot,
+  activeDot,
 }: {
   chartConfig: ChartConfig;
   chartData: unknown[] | undefined;
@@ -35,6 +39,8 @@ const LineChartComponent = ({
     top?: number;
     bottom?: number;
   };
+  dot?: LineDot;
+  activeDot?: ActiveShape<DotProps> | DotProps;
 }) => {
   return (
     <ChartContainer
@@ -82,7 +88,8 @@ const LineChartComponent = ({
                 type={lineType}
                 stroke={chartConfig[chart].color}
                 strokeWidth={2}
-                dot={false}
+                dot={dot}
+                activeDot={activeDot}
                 key={i}
               />
             );
