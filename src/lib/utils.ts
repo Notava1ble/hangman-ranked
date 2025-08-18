@@ -126,7 +126,7 @@ export function getEloProgression(
     Awaited<ReturnType<typeof useQuery<typeof api.user.getRecentRankedGames>>>
   >
 ) {
-  let currentElo = 1200;
+  let currentElo = 1000;
   const eloProgression = [
     { game: "0", elo: "1200" },
     ...recentGames
@@ -138,4 +138,13 @@ export function getEloProgression(
       }),
   ];
   return eloProgression;
+}
+
+export function getRankFromElo(elo: number) {
+  if (elo < 800) return "Beginner";
+  if (elo < 1200) return "Intermediate";
+  if (elo < 1600) return "Advanced";
+  if (elo < 2000) return "Expert";
+  if (elo < 2400) return "Master";
+  return "Grandmaster";
 }

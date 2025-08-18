@@ -86,7 +86,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
         name: finalName,
         lowercaseName: finalName.toLowerCase(),
         image,
-        elo: 1200,
+        elo: 1000,
         userStats: {
           gamesPlayed: 0,
           wins: 0,

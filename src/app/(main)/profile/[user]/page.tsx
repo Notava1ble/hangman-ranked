@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Edit } from "lucide-react";
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
-import { formatLastSeen, getEloProgression } from "@/lib/utils";
+import { formatLastSeen, getEloProgression, getRankFromElo } from "@/lib/utils";
 import { redirect } from "next/navigation";
 import { RankedGamesGraph } from "@/components/RecentGames";
 
@@ -39,7 +39,7 @@ const Page = async ({ params }: { params: Promise<{ user: string }> }) => {
               <p className="text-xl">
                 <span className="text-green-800">
                   {/* Add the rank image (diamond is placeholder) */}
-                  💎 Intermediate [{userInfo.elo}]
+                  💎 {getRankFromElo(userInfo.elo)} [{userInfo.elo}]
                 </span>{" "}
                 <span>#12</span>
               </p>
