@@ -14,6 +14,10 @@ import {
 import Container from "./Container";
 import LineChartComponent from "./LineChart";
 import { getEloProgression } from "@/lib/utils";
+import { fetchQuery } from "convex/nextjs";
+import { useState } from "react";
+import { Button } from "./ui/button";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 export type PreloadedRecentSoloGamesType = Preloaded<
   typeof api.user.getRecentSoloGames
@@ -82,57 +86,105 @@ export const RecentRankedGames = ({
 
   return (
     <>
-      <Container>
-        <Table>
-          <TableCaption>Your recent Games</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[150px] pl-6">Word</TableHead>
-              <TableHead className="text-right">Opponent</TableHead>
-              <TableHead className="text-right">Elo Change</TableHead>
-              <TableHead className="text-right">Mistakes</TableHead>
-              <TableHead className="text-right">Attempts</TableHead>
-              <TableHead className="pr-6 text-right">Winner</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {recentGames.slice(0, 5).map((game) => {
-              return (
-                <TableRow
-                  key={game._id}
-                  className={`
+      <RecentRankedGamesTable recentGames={recentGames} />
+      {eloProgression.length > 3 && (
+        <RankedGamesGraph eloProgression={eloProgression} />
+      )}
+    </>
+  );
+};
+
+export const RecentRankedGamesTable = ({
+  recentGames,
+  tableTitle = "Your recent Games",
+  limit = 5,
+  paginate = false,
+}: {
+  recentGames: Awaited<
+    ReturnType<typeof fetchQuery<typeof api.user.getUserProfile>>
+  >["recentGames"];
+  tableTitle?: string;
+  limit?: number;
+  paginate?: boolean;
+}) => {
+  const [page, setPage] = useState(0);
+
+  // if paginate is true, use 5 per page, otherwise respect limit
+  const pageSize = limit;
+  const start = paginate ? page * pageSize : 0;
+  const end = start + pageSize;
+  const gamesToShow = recentGames.slice(start, end);
+
+  const totalPages = paginate ? Math.ceil(recentGames.length / pageSize) : 1;
+
+  return (
+    <Container>
+      <Table>
+        <TableCaption>{tableTitle}</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[150px] pl-6">Word</TableHead>
+            <TableHead className="text-right">Opponent</TableHead>
+            <TableHead className="text-right">Elo Change</TableHead>
+            <TableHead className="text-right">Mistakes</TableHead>
+            <TableHead className="text-right">Attempts</TableHead>
+            <TableHead className="pr-6 text-right">Winner</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {gamesToShow.map((game) => {
+            return (
+              <TableRow
+                key={game._id}
+                className={`
                   ${
-                    // Fix bug that occurs when the names are equal for two different users
                     game.hasUserWon
                       ? "bg-green-100 hover:bg-green-200"
                       : "bg-red-100 hover:bg-red-200"
                   }
                 `}
-                >
-                  <TableCell className="pl-6">{game.word}</TableCell>
-                  <TableCell className="text-right">{game.opponent}</TableCell>
-                  <TableCell className="text-right">
-                    {game.eloChange
-                      ? game.eloChange > 0
-                        ? `+${game.eloChange}`
-                        : game.eloChange
-                      : 0}
-                  </TableCell>
-                  <TableCell className="text-right">{game.mistakes}</TableCell>
-                  <TableCell className="text-right">{game.attempts}</TableCell>
-                  <TableCell className="pr-6 text-right">
-                    {game.winner}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </Container>
-      {eloProgression.length > 3 && (
-        <RankedGamesGraph eloProgression={eloProgression} />
+              >
+                <TableCell className="pl-6">{game.word}</TableCell>
+                <TableCell className="text-right">{game.opponent}</TableCell>
+                <TableCell className="text-right">
+                  {game.eloChange
+                    ? game.eloChange > 0
+                      ? `+${game.eloChange}`
+                      : game.eloChange
+                    : 0}
+                </TableCell>
+                <TableCell className="text-right">{game.mistakes}</TableCell>
+                <TableCell className="text-right">{game.attempts}</TableCell>
+                <TableCell className="pr-6 text-right">{game.winner}</TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+
+      {/* Pagination controls */}
+      {paginate && totalPages > 1 && (
+        <div className="flex justify-center items-center gap-4 mt-4">
+          <Button
+            variant="outline"
+            disabled={page === 0}
+            onClick={() => setPage((p) => p - 1)}
+          >
+            <ArrowLeft />
+          </Button>
+          <span>
+            Page {page + 1} of {totalPages}
+          </span>
+          <Button
+            variant="outline"
+            disabled={page === totalPages - 1}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            <ArrowRight />
+          </Button>
+        </div>
       )}
-    </>
+    </Container>
   );
 };
 

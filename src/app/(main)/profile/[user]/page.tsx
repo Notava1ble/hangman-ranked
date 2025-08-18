@@ -3,11 +3,14 @@ import { fetchQuery } from "convex/nextjs";
 import { api } from "../../../../../convex/_generated/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Edit } from "lucide-react";
+import { Edit, LineChart } from "lucide-react";
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
 import { formatLastSeen, getEloProgression, getRankFromElo } from "@/lib/utils";
 import { redirect } from "next/navigation";
-import { RankedGamesGraph } from "@/components/RecentGames";
+import {
+  RankedGamesGraph,
+  RecentRankedGamesTable,
+} from "@/components/RecentGames";
 
 const Page = async ({ params }: { params: Promise<{ user: string }> }) => {
   const { user } = await params;
@@ -25,7 +28,7 @@ const Page = async ({ params }: { params: Promise<{ user: string }> }) => {
   const { recentGames } = userInfo;
 
   return (
-    <div className="w-full h-full mb-12">
+    <div className="w-full h-full mb-32">
       <Container className="relative">
         <div className="flex gap-4">
           <Avatar className="size-18 rounded-lg">
@@ -54,14 +57,25 @@ const Page = async ({ params }: { params: Promise<{ user: string }> }) => {
           )}
         </div>
         {userInfo.isSelf && (
-          <Button variant="outline" className="absolute top-4 right-4">
-            <Edit /> Edit
-          </Button>
+          <div className="flex-center gap-2 absolute top-4 right-4">
+            <Button variant="outline">
+              <Edit /> Edit
+            </Button>
+            <Button variant="primary">
+              <LineChart /> Stats
+            </Button>
+          </div>
         )}
       </Container>
       {recentGames.length > 3 && (
         <RankedGamesGraph eloProgression={getEloProgression(recentGames)} />
       )}
+      <RecentRankedGamesTable
+        recentGames={recentGames}
+        tableTitle={`${userInfo.name}'s recent games`}
+        paginate={true}
+        limit={6}
+      />
     </div>
   );
 };
