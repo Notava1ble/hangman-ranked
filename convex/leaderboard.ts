@@ -48,14 +48,16 @@ export const getEloLeaderboard = query({
     });
 
     return topEloPlayers.map((player, i) => {
-      return {
-        rank: i + 1,
-        user: player.name,
-        elo: player.elo,
-        games: player.userStats?.gamesPlayed || 0,
-        winPct: player.userStats?.winRate || 0,
-        lastSeen: player.userStats?.lastSeen || 0,
-      };
+      if (player.userStats.gamesPlayed !== 0) {
+        return {
+          rank: i + 1,
+          user: player.name,
+          elo: player.elo,
+          games: player.userStats?.gamesPlayed || 0,
+          winPct: player.userStats?.winRate || 0,
+          lastSeen: player.userStats?.lastSeen || 0,
+        };
+      }
     });
   },
 });
