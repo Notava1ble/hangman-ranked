@@ -39,7 +39,12 @@ export const getEloLeaderboard = query({
       .order("desc")
       .take(100);
 
-    topEloPlayers.sort((a, b) => {
+    const filteredPlayers = topEloPlayers.filter(
+      (player) =>
+        player.userStats?.gamesPlayed && player.userStats.gamesPlayed > 0
+    );
+
+    filteredPlayers.sort((a, b) => {
       if (b.elo !== a.elo) return b.elo - a.elo;
       const gamesA = a.userStats.gamesPlayed;
       const gamesB = b.userStats.gamesPlayed;
@@ -47,17 +52,15 @@ export const getEloLeaderboard = query({
       return a._creationTime - b._creationTime;
     });
 
-    return topEloPlayers.map((player, i) => {
-      if (player.userStats.gamesPlayed !== 0) {
-        return {
-          rank: i + 1,
-          user: player.name,
-          elo: player.elo,
-          games: player.userStats?.gamesPlayed || 0,
-          winPct: player.userStats?.winRate || 0,
-          lastSeen: player.userStats?.lastSeen || 0,
-        };
-      }
+    return filteredPlayers.map((player, i) => {
+      return {
+        rank: i + 1,
+        user: player.name,
+        elo: player.elo,
+        games: player.userStats?.gamesPlayed || 0,
+        winPct: player.userStats?.winRate || 0,
+        lastSeen: player.userStats?.lastSeen || 0,
+      };
     });
   },
 });

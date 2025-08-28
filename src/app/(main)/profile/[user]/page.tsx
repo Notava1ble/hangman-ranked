@@ -3,7 +3,7 @@ import { fetchQuery } from "convex/nextjs";
 import { api } from "../../../../../convex/_generated/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Edit, LineChart } from "lucide-react";
+import { Edit, Trash } from "lucide-react";
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
 import { formatLastSeen, getEloProgression, getRankFromElo } from "@/lib/utils";
 import { redirect } from "next/navigation";
@@ -12,6 +12,7 @@ import {
   RecentRankedGamesTable,
 } from "@/components/RecentGames";
 import LinkBtn from "@/components/LinkBtn";
+import Link from "next/link";
 
 const Page = async ({ params }: { params: Promise<{ user: string }> }) => {
   const { user } = await params;
@@ -56,14 +57,15 @@ const Page = async ({ params }: { params: Promise<{ user: string }> }) => {
           {userInfo.personalScoreRecord && (
             <p>Personal best: {userInfo.personalScoreRecord}</p>
           )}
+          {userInfo.isSelf && <Link href="/stats">Go to stats</Link>}
         </div>
         {userInfo.isSelf && (
           <div className="flex-center gap-2 absolute top-4 right-4">
             <Button variant="outline">
               <Edit /> Edit
             </Button>
-            <LinkBtn variant="primary" href="/stats">
-              <LineChart /> Stats
+            <LinkBtn variant="destructive" href="/stats">
+              <Trash /> Delete
             </LinkBtn>
           </div>
         )}
