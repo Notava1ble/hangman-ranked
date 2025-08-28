@@ -18,6 +18,7 @@ import { fetchQuery } from "convex/nextjs";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export type PreloadedRecentSoloGamesType = Preloaded<
   typeof api.user.getRecentSoloGames
@@ -145,7 +146,9 @@ export const RecentRankedGamesTable = ({
                 `}
               >
                 <TableCell className="pl-6">{game.word}</TableCell>
-                <TableCell className="text-right">{game.opponent}</TableCell>
+                <TableCell>
+                  <Link href={`profile/${game.opponent}`}>{game.opponent}</Link>
+                </TableCell>
                 <TableCell className="text-right">
                   {game.eloChange
                     ? game.eloChange > 0
@@ -155,7 +158,9 @@ export const RecentRankedGamesTable = ({
                 </TableCell>
                 <TableCell className="text-right">{game.mistakes}</TableCell>
                 <TableCell className="text-right">{game.attempts}</TableCell>
-                <TableCell className="pr-6 text-right">{game.winner}</TableCell>
+                <TableCell>
+                  <Link href={`profile/${game.winner}`}>{game.winner}</Link>
+                </TableCell>
               </TableRow>
             );
           })}
