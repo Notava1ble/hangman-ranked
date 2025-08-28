@@ -16,6 +16,7 @@ import { useAuthActions } from "@convex-dev/auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { credentialValidator } from "@/lib/validators";
+import Link from "next/link";
 
 type ErrorType = {
   email?: string[] | undefined;
@@ -219,6 +220,10 @@ export default function LoginPage() {
               </div>
             </CardContent>
           </Card>
+          <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
+            By clicking continue, you agree to our{" "}
+            <Link href="/privacy">Privacy Policy</Link>.
+          </div>
         </div>
       </div>
     </div>
