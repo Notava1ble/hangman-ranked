@@ -186,8 +186,12 @@ const ClientSoloGame = () => {
         <div className="p-4">
           <p className="text-sm text-center text-muted-foreground">
             Sign in to make your games appear on leaderboard and to have
-            statistics based on them. By using this service, you agree to our{" "}
-            <Link href="/privacy">Privacy Policy</Link>.
+            statistics based on them. <br />
+            By using this service, you agree to our{" "}
+            <Link href="/privacy" className="underline">
+              Privacy Policy
+            </Link>
+            .
           </p>
         </div>
       </>
