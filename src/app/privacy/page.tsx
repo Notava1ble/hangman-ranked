@@ -39,6 +39,7 @@ const Page = () => {
         </p>
 
         <h3>Use of Information</h3>
+        <p>We use the information we collect for purposes including:</p>
         <ul>
           <li>Providing, maintaining, and improving our Services.</li>
           <li>Responding to user inquiries and providing customer support.</li>
@@ -105,11 +106,16 @@ const Page = () => {
         <h2>GDPR Notice</h2>
 
         <h3>Legal Basis for Processing Personal Data</h3>
+        <p>
+          Under the General Data Protection Regulation (GDPR), we must have a
+          legal basis to process your personal information. We process your
+          information on the following legal bases:
+        </p>
         <ul>
           <li>You have consented to the use of your personal information.</li>
           <li>
-            We need your personal information to provide services or respond to
-            inquiries.
+            We need your personal information to provide you with services and
+            products requested by you, or to respond to your inquiries.
           </li>
           <li>We have a legal obligation to use your personal information.</li>
           <li>
@@ -119,16 +125,56 @@ const Page = () => {
 
         <h3>Transfers of Personal Data</h3>
         <p>
-          Your personal data may be stored and processed in your region, or
-          transferred and processed outside the EEA, including countries such as
-          the United States.
+          The personal data that we collect from you may be stored and processed
+          in your region, or transferred to, stored at or otherwise processed
+          outside the European Economic Area (&quot;EEA&quot;), which may
+          include countries such as the United States.
+        </p>
+
+        <h3>of Personal Data</h3>
+        <p>
+          We will retain your personal information for as long as necessary to
+          provide our services, and as necessary to comply with our legal
+          obligations, resolve disputes, and enforce our policies. You may
+          request deletion of your personal information at any time through our
+          Services.
         </p>
 
         <h3>Data Subject Rights</h3>
+        <p>Under the GDPR, you have the following rights:</p>
         <ul>
           <li>
-            Right to Access, Rectification, Erasure, Restrict Processing, Data
-            Portability, Object, and Withdraw Consent.
+            Right to Access: You have the right to request access to your
+            personal data that we hold.
+          </li>
+          <li>
+            Right to Rectification: You have the right to correct any inaccurate
+            personal data about you and to complete any incomplete personal data
+            about you.
+          </li>
+          <li>
+            Right to Erasure (the &quot;Right to be Forgotten&quot;): In certain
+            circumstances, you have the right to the erasure of your personal
+            data from our systems.
+          </li>
+          <li>
+            Right to Restrict Processing: In certain circumstances, you have the
+            right to restrict the processing of your personal data.
+          </li>
+          <li>
+            Right to Data Portability: You have the right to receive your
+            personal data in a structured, commonly used and machine-readable
+            format and have the right to transmit those data to another
+            controller.
+          </li>
+          <li>
+            Right to Object: In certain circumstances, you have the right to
+            object to the processing of your personal data.
+          </li>
+          <li>
+            Right to Withdraw Consent: If you have given your consent to
+            anything we do with your personal data, you have the right to
+            withdraw your consent at any time
           </li>
         </ul>
 
@@ -142,10 +188,46 @@ const Page = () => {
         </p>
 
         <h2>CCPA Notice</h2>
+        <h3>Notice of Collection and Use of Personal Information</h3>
         <p>
-          We do not sell your personal information, but you may have rights
-          under the CCPA to know, delete, or limit the use of your information.
+          We may collect the following categories of personal information about
+          you:
         </p>
+        <ul>
+          <li>Identifiers: such as name, email address.</li>
+          <li>
+            Personal information: as defined in the California customer records
+            law, such as contact information.
+          </li>
+          <li>
+            We may use your personal information for the purposes listed in this
+            Privacy Policy.
+          </li>
+        </ul>
+        <h3>Our Personal Information Selling Practices</h3>
+        <p>
+          We do not sell your personal information in the traditional sense. We
+          do share your information as outlined in the Information Sharing
+          section of this Privacy Policy.
+        </p>
+
+        <h3>Rights Under CCPA</h3>
+        <p>If you are a California resident, you have the following rights:</p>
+        <ul>
+          <li>
+            Right to Know: You have the right to request that we disclose what
+            personal information we collect, use, disclose, and sell about you.
+          </li>
+          <li>
+            Right to Delete: You have the right to request the deletion of your
+            personal information that we have collected or maintain, subject to
+            certain exceptions.
+          </li>
+          <li>
+            Right to Non-Discrimination: You have the right not to receive
+            discriminatory treatment for exercising your CCPA rights.
+          </li>
+        </ul>
 
         <h3>Exercising Your CCPA Data Protection Rights</h3>
         <p>
@@ -153,29 +235,37 @@ const Page = () => {
           <Link href="mailto:visarmullaj07@gmail.com">
             visarmullaj07@gmail.com
           </Link>{" "}
-          or visit our website:{" "}
+          use the features provided in our Services to do so directly:{" "}
           <Link href="https://hangman-ranked.vercel.app/">
             https://hangman-ranked.vercel.app/
           </Link>
-          .
+          . Please note that we may need to verify your identity before
+          processing your request, which may require additional personal
+          information from you. In certain circumstances, we may decline or
+          limit your request, particularly where we are unable to verify your
+          identity or locate your information in our systems, or as permitted by
+          law.
         </p>
 
         <h2>Changes to this Privacy Policy</h2>
         <p>
-          We reserve the right to modify this Privacy Policy at any time. Your
-          continued use of our Services constitutes acceptance of any changes.
+          We reserve the right to modify this Privacy Policy at any time, so
+          please review it frequently. Changes will be posted on this page and
+          your continued use of our Services after any changes have been posted
+          will constitute your agreement to such changes.
         </p>
 
         <h2>Contact Us</h2>
         <p>
-          If you have any questions, please contact us at{" "}
+          If you have any questions about this Privacy Policy, please contact us
+          at{" "}
           <Link href="mailto:visarmullaj07@gmail.com">
             visarmullaj07@gmail.com
           </Link>
           .
         </p>
 
-        <p className="text-sm text-gray-500">Last updated: 8/28/2025</p>
+        <p className="text-sm text-gray-500">Last updated: 8/29/2025</p>
       </main>
     </div>
   );
