@@ -7,6 +7,7 @@ import { formatTime, getDisplayWord, getRandomWord } from "@/lib/utils";
 import HangmanFigure from "./HangmanFigure";
 import { MistakeAttemptCard } from "./SoloGame";
 import Keyboard from "./Keyboard";
+import Link from "next/link";
 
 type GameType = {
   word: string;
@@ -185,7 +186,8 @@ const ClientSoloGame = () => {
         <div className="p-4">
           <p className="text-sm text-center text-muted-foreground">
             Sign in to make your games appear on leaderboard and to have
-            statistics based on them
+            statistics based on them. By using this service, you agree to our{" "}
+            <Link href="/privacy">Privacy Policy</Link>.
           </p>
         </div>
       </>

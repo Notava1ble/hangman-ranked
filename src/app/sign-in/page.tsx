@@ -221,7 +221,7 @@ export default function LoginPage() {
             </CardContent>
           </Card>
           <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-            By clicking continue, you agree to our{" "}
+            By using this service, you agree to our{" "}
             <Link href="/privacy">Privacy Policy</Link>.
           </div>
         </div>
