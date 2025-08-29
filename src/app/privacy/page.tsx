@@ -3,7 +3,7 @@ import Link from "next/link";
 const Page = () => {
   return (
     <div className="w-full h-full bg-background dark py-32">
-      <main className="mx-auto prose prose-lg prose-invert max-w-3/5">
+      <main className="mx-auto prose prose-lg prose-invert lg:max-w-3/5 md:max-w-4/5 px-6">
         <h2>Introduction</h2>
         <p>
           This Privacy Policy describes how Hangman-Ranked (&quot;we&quot;,
