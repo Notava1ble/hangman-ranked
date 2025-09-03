@@ -147,7 +147,13 @@ export const RecentRankedGamesTable = ({
               >
                 <TableCell className="pl-6">{game.word}</TableCell>
                 <TableCell>
-                  <Link href={`profile/${game.opponent}`}>{game.opponent}</Link>
+                  {game.opponent === "deleted-user" ? (
+                    <p>{game.opponent}</p>
+                  ) : (
+                    <Link href={`profile/${game.opponent}`}>
+                      {game.opponent}
+                    </Link>
+                  )}
                 </TableCell>
                 <TableCell className="text-right">
                   {game.eloChange
@@ -159,7 +165,11 @@ export const RecentRankedGamesTable = ({
                 <TableCell className="text-right">{game.mistakes}</TableCell>
                 <TableCell className="text-right">{game.attempts}</TableCell>
                 <TableCell>
-                  <Link href={`profile/${game.winner}`}>{game.winner}</Link>
+                  {game.winner === "deleted-user" ? (
+                    <p>{game.winner}</p>
+                  ) : (
+                    <Link href={`profile/${game.winner}`}>{game.winner}</Link>
+                  )}
                 </TableCell>
               </TableRow>
             );

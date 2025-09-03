@@ -17,6 +17,8 @@
 - [ ] Add the profile page, where you can view details about other players, and if the profile is yours, you have the option to delete the profile and change the name
 - [ ] Divide the stats page to general, solo and ranked specific stats
 - [ ] Make the first 5 games a user plays be placement games, meaning until completed, the user doesnt have an elo and its excluded from leaderboard 
+
+- [ ] Fix SignOut Error
   
 - [ ] Improve the UI/UX
 - [ ] Refactor code for clarity and maintainability

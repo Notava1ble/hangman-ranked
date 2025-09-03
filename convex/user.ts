@@ -1,5 +1,10 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { internalMutation, query, QueryCtx } from "./_generated/server";
+import {
+  internalMutation,
+  mutation,
+  query,
+  QueryCtx,
+} from "./_generated/server";
 import { getLoggedInUserHelper } from "./auth";
 import { sum, countLetters, formatDigitalTime } from "./lib/utils";
 import { v } from "convex/values";
@@ -305,6 +310,10 @@ export const backfillLowercaseName = internalMutation({
 export const getUserProfile = query({
   args: { userName: v.string() },
   handler: async (ctx, { userName }) => {
+    if (userName === "deleted-user") {
+      throw new Error("User not found");
+    }
+
     const requestingUser = await getLoggedInUserHelper(ctx);
     const user = await ctx.db
       .query("users")
@@ -371,5 +380,91 @@ export const getUserProfile = query({
       recentGames,
       isSelf: requestingUser ? requestingUser._id === user._id : false,
     };
+  },
+});
+
+export const deleteUserAccount = mutation({
+  handler: async (ctx) => {
+    const user = await getLoggedInUserHelper(ctx);
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+
+    // Deleted by signOut() function in the client
+    // const sessions = await ctx.db
+    //   .query("authSessions")
+    //   .withIndex("userId", (q) => q.eq("userId", user._id))
+    //   .collect();
+
+    // for (const session of sessions) {
+    //   await ctx.db.delete(session._id);
+    // }
+
+    // Delete related accounts
+    const accounts = await ctx.db
+      .query("authAccounts")
+      .withIndex("userIdAndProvider", (q) => q.eq("userId", user._id))
+      .collect();
+
+    for (const account of accounts) {
+      await ctx.db.delete(account._id);
+    }
+
+    // Mark all their games as from a deleted user
+    const soloGames = await ctx.db
+      .query("games")
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .collect();
+
+    soloGames.forEach(async (game) => {
+      await ctx.db.patch(game._id, { userStatus: "deleted" });
+    });
+
+    // Remove the user from queue
+    const queueEntries = await ctx.db
+      .query("matchQueue")
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .collect();
+
+    queueEntries.forEach(async (entry) => {
+      await ctx.db.delete(entry._id);
+    });
+
+    // Anonymize user data in games
+    const games1 = await ctx.db
+      .query("rankedMatches")
+      .withIndex("by_user1", (q) => q.eq("userId1", user._id))
+      .collect();
+
+    games1.forEach(async (game) => {
+      await ctx.db.patch(game._id, {
+        userName1: "deleted-user",
+        winner: game.winnerId === user._id ? "deleted-user" : game.winner,
+      });
+    });
+
+    const games2 = await ctx.db
+      .query("rankedMatches")
+      .withIndex("by_user2", (q) => q.eq("userId2", user._id))
+      .collect();
+
+    games2.forEach(async (game) => {
+      await ctx.db.patch(game._id, {
+        userName2: "deleted-user",
+        winner: game.winnerId === user._id ? "deleted-user" : game.winner,
+      });
+    });
+
+    // Strip user personal info
+    await ctx.db.patch(user._id, {
+      name: "deleted-user",
+      lowercaseName: "deleted-user",
+      image: undefined,
+      email: undefined,
+      emailVerificationTime: undefined,
+      phone: undefined,
+      phoneVerificationTime: undefined,
+      status: "deleted",
+    });
   },
 });

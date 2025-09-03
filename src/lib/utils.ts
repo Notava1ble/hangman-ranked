@@ -8,6 +8,20 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function tryCatch<T extends (...args: any[]) => any>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  fn: T & ((...args: Parameters<T>) => Exclude<ReturnType<T>, Promise<any>>),
+  ...args: Parameters<T>
+): { data: ReturnType<T> | null; error: unknown | null } {
+  try {
+    const data = fn(...args);
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
 export function formatTime(ms: number) {
   const totalSeconds = Math.floor(ms / 1000);
   const hours = Math.floor(totalSeconds / 3600);

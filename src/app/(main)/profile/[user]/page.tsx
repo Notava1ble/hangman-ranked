@@ -11,8 +11,8 @@ import {
   RankedGamesGraph,
   RecentRankedGamesTable,
 } from "@/components/RecentGames";
-import LinkBtn from "@/components/LinkBtn";
 import Link from "next/link";
+import ProfileActionBtn from "@/components/ProfileActionBtn";
 
 const Page = async ({ params }: { params: Promise<{ user: string }> }) => {
   const { user } = await params;
@@ -64,9 +64,13 @@ const Page = async ({ params }: { params: Promise<{ user: string }> }) => {
             <Button variant="outline">
               <Edit /> Edit
             </Button>
-            <LinkBtn variant="destructive" href="/stats">
+            <ProfileActionBtn
+              variant="destructive"
+              mutationApi="delete"
+              refresh={true}
+            >
               <Trash /> Delete
-            </LinkBtn>
+            </ProfileActionBtn>
           </div>
         )}
       </Container>

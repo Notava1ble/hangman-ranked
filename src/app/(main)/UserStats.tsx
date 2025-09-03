@@ -7,6 +7,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { tryCatch } from "@/lib/utils";
 import { Preloaded, usePreloadedQuery } from "convex/react";
 import { FunctionReference } from "convex/server";
 import { ExternalLinkIcon } from "lucide-react";
@@ -31,7 +32,22 @@ type UserStatsProps = {
 };
 
 const UserStats: React.FC<UserStatsProps> = ({ preloadedStats }) => {
-  const userStats = usePreloadedQuery(preloadedStats);
+  const { data: userStats, error } = tryCatch(
+    usePreloadedQuery,
+    preloadedStats
+  );
+  if (error) {
+    if ((error as string).includes("User not authenticated")) {
+      <Container className="flex-center">
+        <p>User not authenticated.</p>
+      </Container>;
+    }
+    return (
+      <Container className="flex-center">
+        <p>An Error Occured.</p>
+      </Container>
+    );
+  }
 
   return (
     <Container className="flex justify-around items-center p-4 relative gap-4">

@@ -33,7 +33,10 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
         const name = (args.profile.name as string).trim();
         const lowercaseName = name.toLowerCase();
 
-        if (notAllowedUsernames.has(lowercaseName)) {
+        if (
+          notAllowedUsernames.has(lowercaseName) ||
+          lowercaseName.includes("deleted_user")
+        ) {
           throw new ConvexError("This username is not allowed");
         }
         if (!/^[A-Za-z][A-Za-z0-9_]+$/.test(name)) {
@@ -65,6 +68,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
             winRate: 0,
             lastSeen: Date.now(),
           },
+          status: "active",
         });
 
         return userId;
@@ -75,6 +79,9 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
         undefined;
 
       const finalName = await generateUniqueName(ctx, name);
+      if (finalName.includes("deleted-user")) {
+        throw new ConvexError("This username is not allowed");
+      }
       const image =
         (args.profile.image as string | undefined) ??
         (args.profile.picture as string | undefined) ??
@@ -93,6 +100,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
           winRate: 0,
           lastSeen: Date.now(),
         },
+        status: "active",
       });
 
       return userId;

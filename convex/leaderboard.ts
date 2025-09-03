@@ -5,6 +5,12 @@ export const getSoloLeaderboard = query({
     const topGames = await ctx.db
       .query("games")
       .withIndex("score", (q) => q.gte("score", 1))
+      .filter((q) =>
+        q.and(
+          q.neq(q.field("userStatus"), "deleted"),
+          q.neq(q.field("userStatus"), "banned")
+        )
+      ) // Exclude games from banned or deleted users
       .order("desc")
       .take(100);
 
@@ -36,12 +42,21 @@ export const getEloLeaderboard = query({
     const topEloPlayers = await ctx.db
       .query("users")
       .withIndex("by_elo")
+      .filter((q) =>
+        q.and(
+          q.neq(q.field("status"), "deleted"),
+          q.neq(q.field("status"), "banned")
+        )
+      ) // Exclude games from banned or deleted users
       .order("desc")
       .take(100);
 
     const filteredPlayers = topEloPlayers.filter(
       (player) =>
-        player.userStats?.gamesPlayed && player.userStats.gamesPlayed > 0
+        player.userStats?.gamesPlayed &&
+        player.userStats.gamesPlayed > 0 &&
+        player.status !== "banned" &&
+        player.status !== "deleted"
     );
 
     filteredPlayers.sort((a, b) => {

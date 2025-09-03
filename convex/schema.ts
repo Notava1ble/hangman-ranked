@@ -20,6 +20,9 @@ export default defineSchema({
     isAbandoned: v.boolean(),
     score: v.optional(v.number()),
     timeoutScheduleId: v.optional(v.id("_scheduled_functions")),
+    userStatus: v.optional(
+      v.union(v.literal("active"), v.literal("banned"), v.literal("deleted"))
+    ),
   })
     .index("by_user", ["userId"])
     .index("by_completion", ["isCompleted"])
@@ -87,11 +90,15 @@ export default defineSchema({
       winRate: v.number(),
       lastSeen: v.number(),
     }),
+    status: v.optional(
+      v.union(v.literal("active"), v.literal("banned"), v.literal("deleted"))
+    ),
   })
     .index("phone", ["phone"])
     .index("email", ["email"])
     .index("name", ["name"])
     .index("lowercase_name", ["lowercaseName"])
     .index("by_elo", ["elo"])
-    .index("by_elo_games_played", ["elo", "userStats.gamesPlayed"]),
+    .index("by_elo_games_played", ["elo", "userStats.gamesPlayed"])
+    .index("by_status", ["status"]),
 });
