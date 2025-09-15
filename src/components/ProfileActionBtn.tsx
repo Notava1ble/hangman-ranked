@@ -32,13 +32,13 @@ const ProfileActionBtn = ({
   return (
     <Button
       onClick={async () => {
+        await action();
         if (refresh) {
           await signOut();
           router.replace("/");
         }
-        await action();
       }}
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(buttonVariants({ variant, size }), className)}
       {...props}
     >
       {children}

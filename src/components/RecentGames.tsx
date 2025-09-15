@@ -150,7 +150,7 @@ export const RecentRankedGamesTable = ({
                   {game.opponent === "deleted-user" ? (
                     <p>{game.opponent}</p>
                   ) : (
-                    <Link href={`profile/${game.opponent}`}>
+                    <Link href={`profile/${encodeURIComponent(game.opponent)}`}>
                       {game.opponent}
                     </Link>
                   )}

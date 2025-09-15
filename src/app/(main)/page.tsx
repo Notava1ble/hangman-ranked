@@ -6,6 +6,7 @@ import { RecentSoloGames } from "@/components/RecentGames";
 import { Preloaded } from "convex/react";
 import SoloGame from "@/components/SoloGame";
 import ClientSoloGame from "@/components/ClientSoloGame";
+import ClientAuthGate from "./ClientAuthGate";
 
 const Page = async () => {
   const token = await convexAuthNextjsToken();
@@ -36,11 +37,13 @@ const Page = async () => {
           Hello there {user ? user.name : "Player"}
         </h1>
       </div>
-      {preloadedStats && <UserStats preloadedStats={preloadedStats} />}
-      {user ? <SoloGame /> : <ClientSoloGame />}
-      {preloadedRecentGames && (
-        <RecentSoloGames preloadedRecentGames={preloadedRecentGames} />
-      )}
+      <ClientAuthGate fallback={<ClientSoloGame />}>
+        {preloadedStats && <UserStats preloadedStats={preloadedStats} />}
+        {user ? <SoloGame /> : <ClientSoloGame />}
+        {preloadedRecentGames && (
+          <RecentSoloGames preloadedRecentGames={preloadedRecentGames} />
+        )}
+      </ClientAuthGate>
     </div>
   );
 };
