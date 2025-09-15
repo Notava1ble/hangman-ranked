@@ -82,10 +82,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
       if (finalName.includes("deleted-user")) {
         throw new ConvexError("This username is not allowed");
       }
-      const image =
-        (args.profile.image as string | undefined) ??
-        (args.profile.picture as string | undefined) ??
-        `https://ui-avatars.com/api/?name=${encodeURIComponent(finalName)}&background=random`;
+      const image = `https://ui-avatars.com/api/?name=${encodeURIComponent(finalName)}&background=random`;
 
       const userId = await ctx.db.insert("users", {
         email,
