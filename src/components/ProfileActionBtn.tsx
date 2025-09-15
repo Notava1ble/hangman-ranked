@@ -33,8 +33,8 @@ const ProfileActionBtn = ({
     <Button
       onClick={async () => {
         await action();
+        await signOut();
         if (refresh) {
-          await signOut();
           router.replace("/");
         }
       }}
