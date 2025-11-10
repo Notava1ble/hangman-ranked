@@ -9,7 +9,7 @@ Sentry.init({
 
   beforeSend(event) {
     if (event.user) {
-      // Don't send user's email address
+      // Don't send user's ip address
       delete event.user.ip_address;
       delete event.user.geo;
     }
