@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ActionButton = ({ func }: { func?: any }) => {
   if (!func) {
     return (
