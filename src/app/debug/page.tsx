@@ -11,8 +11,8 @@ export default function DebugPage() {
     <main className="mx-auto w-3/4 pt-10 prose max-w-3/4">
       <h3 className="text-destructive">
         Warning: This page is for debugging purposes only.{" "}
-        <Link href="/">Go back</Link> if you don't know what you're doing.
-        Everything you do here will be at your own risk
+        <Link href="/">Go back</Link> if you don&apos;t know what you&apos;re
+        doing. Everything you do here will be at your own risk
       </h3>
       <section>
         <h4>

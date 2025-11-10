@@ -13,7 +13,6 @@ export default function GlobalErrorClient({
       Sentry.captureException(error);
     } catch (e) {
       // swallow to avoid throwing from the error UI
-      // eslint-disable-next-line no-console
       console.error("Failed to capture exception in GlobalErrorClient", e);
     }
   }, [error]);
