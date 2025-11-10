@@ -28,6 +28,7 @@ const Page = () => {
         </p>
         <ul>
           <li>Contact information such as your name and email address.</li>
+          <li>IP address and other network identifiers.</li>
         </ul>
 
         <h3>Non-Personal Data</h3>
@@ -68,7 +69,12 @@ const Page = () => {
           We do not use cookies to collect information, except for
           authentication purposes. We only use analytics to collect anonymous
           demographic information, such as user counts and general geographic
-          location by country.
+          location by country. We may also collect your IP address and other
+          network identifiers automatically when you interact with our Services
+          for purposes such as authentication, security, fraud prevention,
+          logging, and basic geolocation. IP addresses can in some circumstances
+          be personal data under applicable laws; when they are, we treat them
+          in accordance with this Privacy Policy.
         </p>
 
         <h2>Security</h2>
@@ -76,7 +82,9 @@ const Page = () => {
           We employ reasonable physical, technical, and administrative measures
           designed to safeguard the information we collect. However, no security
           measure is 100% secure, and we cannot guarantee the absolute security
-          of your information.
+          of your information. We may process IP addresses and related logs to
+          help detect and prevent abuse, unauthorized access, and other security
+          incidents.
         </p>
 
         <h2>International Data Transfers</h2>
@@ -85,7 +93,9 @@ const Page = () => {
           transferred to countries outside your own, such as servers in the U.S.
           or the EU, depending on our hosting providers. We do not control the
           location of servers, and your personal information may be subject to
-          privacy laws that differ from those in your country.
+          privacy laws that differ from those in your country. This may include
+          any IP addresses and network identifiers collected in connection with
+          your use of the Services.
         </p>
 
         <h2>Your Rights and Choices</h2>
@@ -203,6 +213,10 @@ const Page = () => {
             We may use your personal information for the purposes listed in this
             Privacy Policy.
           </li>
+          <li>
+            We may also collect identifiers such as IP address, which may be
+            treated as personal information under certain laws.
+          </li>
         </ul>
         <h3>Our Personal Information Selling Practices</h3>
         <p>
@@ -265,7 +279,7 @@ const Page = () => {
           .
         </p>
 
-        <p className="text-sm text-gray-500">Last updated: 8/29/2025</p>
+        <p className="text-sm text-gray-500">Last updated: 11/10/2025</p>
       </main>
     </div>
   );
