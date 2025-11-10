@@ -141,7 +141,7 @@ const Page = () => {
           include countries such as the United States.
         </p>
 
-        <h3>of Personal Data</h3>
+        <h3>Retention of Personal Data</h3>
         <p>
           We will retain your personal information for as long as necessary to
           provide our services, and as necessary to comply with our legal
