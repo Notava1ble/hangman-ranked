@@ -99,7 +99,7 @@ const RankedGame = () => {
           <HangmanFigure wrongGuesses={currentRankedGameStats?.mistakes} />
           {currentRankedGameStats && (
             <Countdown
-              lastUpdate={new Date(currentRankedGameStats.lastUpdate)}
+              lastUpdate={currentRankedGameStats.lastUpdate}
             />
           )}
         </div>
@@ -107,7 +107,7 @@ const RankedGame = () => {
           <div className="mx-auto w-fit block md:hidden">
             {currentRankedGameStats && (
               <Countdown
-                lastUpdate={new Date(currentRankedGameStats.lastUpdate)}
+                lastUpdate={currentRankedGameStats.lastUpdate}
               />
             )}
           </div>
