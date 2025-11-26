@@ -26,8 +26,8 @@ const Page = () => {
                 <h2 className="text-3xl font-bold flex items-center gap-3">
                   🏆 Leaderboard
                 </h2>
-                <p className="mt-2 opacity-90">
-                  Top 100 Games/Players Worldwide
+                <p className="mt-2">
+                  Top 100 Games and Players Worldwide
                 </p>
               </div>
 
@@ -135,6 +135,14 @@ const RankedLeaderboard = async () => {
 
 const SoloLeaderboard = async () => {
   const topGames = await fetchQuery(api.leaderboard.getSoloLeaderboard);
+
+  if (!topGames || topGames.length === 0) {
+    return (
+      <div className="p-6">
+        <p className="text-center text-gray-500">No solo games played yet.</p>
+      </div>
+    );
+  }
   return (
     <Table>
       <TableHeader>

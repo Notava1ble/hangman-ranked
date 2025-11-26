@@ -38,9 +38,9 @@ type Letter =
   | "Z";
 
 const Page = () => {
-  const mockData = useQuery(api.user.getUserDetailedStats);
+  const fullUserStats = useQuery(api.user.getUserDetailedStats);
 
-  if (mockData === null || mockData === undefined) {
+  if (fullUserStats === null || fullUserStats === undefined) {
     return (
       <div className="w-full h-full mb-12">
         <Container className="flex items-center justify-center">
@@ -58,25 +58,25 @@ const Page = () => {
         <div className="text-center">
           <p className="text-muted-foreground">Games:</p>
           <span className="text-3xl font-semibold">
-            {mockData.header.totalGames}
+            {fullUserStats.header.totalGames}
           </span>
         </div>
         <div className="text-center">
           <p className="text-muted-foreground">Wins:</p>
           <span className="text-3xl font-semibold">
-            {mockData.header.totalWins}
+            {fullUserStats.header.totalWins}
           </span>
         </div>
         <div className="text-center">
           <p className="text-muted-foreground">Time Guessing:</p>
           <span className="text-3xl font-semibold">
-            {formatDigitalTime(mockData.header.timeGuessing)}
+            {formatDigitalTime(fullUserStats.header.timeGuessing)}
           </span>
         </div>
       </Container>
       {/* PBS */}
       <Container className="grid grid-cols-3 gap-4">
-        {Object.entries(mockData.pbs).map((entry, _) => {
+        {Object.entries(fullUserStats.pbs).map((entry, _) => {
           return (
             <div key={_} className="text-center">
               <p className="text-muted-foreground">
@@ -89,7 +89,7 @@ const Page = () => {
       </Container>
       {/* ACTIVITY */}
       <Container>
-        <CalendarHeatmapComponent values={mockData.charts.gamesPerDay} />
+        <CalendarHeatmapComponent values={fullUserStats.charts.gamesPerDay} />
       </Container>
       {/* AVARAGES (Make it smoother to show the difference between all and only won games, like hovering) */}
       <Container>
@@ -99,7 +99,7 @@ const Page = () => {
             <TabsTrigger value="All">All games</TabsTrigger>
           </TabsList>
           <TabsContent value="Won" className="grid grid-cols-3 gap-4 mt-4">
-            {Object.entries(mockData.avarages.withoutLossGames).map(
+            {Object.entries(fullUserStats.avarages.withoutLossGames).map(
               (entry, i) => {
                 return (
                   <div key={i} className={cn("text-center", i)}>
@@ -113,7 +113,7 @@ const Page = () => {
             )}
           </TabsContent>
           <TabsContent value="All" className="grid grid-cols-3 gap-4 mt-4">
-            {Object.entries(mockData.avarages.withLossGames).map((entry, i) => {
+            {Object.entries(fullUserStats.avarages.withLossGames).map((entry, i) => {
               return (
                 <div key={i} className={cn("text-center", i)}>
                   <p className="text-muted-foreground">
@@ -135,7 +135,7 @@ const Page = () => {
               color: "var(--chart-3)",
             },
           }}
-          chartData={mockData.charts.scoreOverGames.map((score, game) => ({
+          chartData={fullUserStats.charts.scoreOverGames.map((score, game) => ({
             game: (game + 1).toString(),
             score,
           }))}
@@ -162,11 +162,11 @@ const Page = () => {
                   color: "var(--chart-1)",
                 },
               }}
-              chartData={mockData.charts.guessesUsedPerGame.map(
+              chartData={fullUserStats.charts.guessesUsedPerGame.map(
                 (guesses, game) => ({
                   game: (game + 1).toString(),
                   guesses,
-                  mistakes: mockData.charts.mistakesPerGame[game] ?? 0,
+                  mistakes: fullUserStats.charts.mistakesPerGame[game] ?? 0,
                 })
               )}
             />
@@ -181,7 +181,7 @@ const Page = () => {
                   color: "var(--chart-3)",
                 },
               }}
-              chartData={mockData.charts.guessAccuracyPerGame.map(
+              chartData={fullUserStats.charts.guessAccuracyPerGame.map(
                 (accuracy, game) => ({
                   game: game.toString(),
                   accuracy,
@@ -197,11 +197,11 @@ const Page = () => {
       <Container>
         <FrequencyGraph
           chartData={(
-            Object.keys(mockData.charts.letterAppearedFrequency) as Letter[]
+            Object.keys(fullUserStats.charts.letterAppearedFrequency) as Letter[]
           ).map((letter) => ({
             letter,
-            appeared: mockData.charts.letterAppearedFrequency[letter],
-            guessed: mockData.charts.letterGuessedFrequency[letter],
+            appeared: fullUserStats.charts.letterAppearedFrequency[letter],
+            guessed: fullUserStats.charts.letterGuessedFrequency[letter],
           }))}
           chartConfig={{
             appeared: {
