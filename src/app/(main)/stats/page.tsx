@@ -50,6 +50,16 @@ const Page = () => {
     );
   }
 
+  if (fullUserStats.header.totalWins < 3) {
+    return (
+      <div className="w-full h-full mb-12">
+        <Container className="flex items-center justify-center text-center">
+          Complete more games to unlock your single-player statistics.
+        </Container>
+      </div>
+    );
+  }
+
   // Achievement page and stats page
   return (
     <div className="w-full h-full mb-12">
@@ -109,20 +119,22 @@ const Page = () => {
                     <span className="text-3xl font-semibold">{entry[1]}</span>
                   </div>
                 );
-              }
+              },
             )}
           </TabsContent>
           <TabsContent value="All" className="grid grid-cols-3 gap-4 mt-4">
-            {Object.entries(fullUserStats.avarages.withLossGames).map((entry, i) => {
-              return (
-                <div key={i} className={cn("text-center", i)}>
-                  <p className="text-muted-foreground">
-                    {toSentenceCase(entry[0])}
-                  </p>
-                  <span className="text-3xl font-semibold">{entry[1]}</span>
-                </div>
-              );
-            })}
+            {Object.entries(fullUserStats.avarages.withLossGames).map(
+              (entry, i) => {
+                return (
+                  <div key={i} className={cn("text-center", i)}>
+                    <p className="text-muted-foreground">
+                      {toSentenceCase(entry[0])}
+                    </p>
+                    <span className="text-3xl font-semibold">{entry[1]}</span>
+                  </div>
+                );
+              },
+            )}
           </TabsContent>
         </Tabs>
       </Container>
@@ -167,7 +179,7 @@ const Page = () => {
                   game: (game + 1).toString(),
                   guesses,
                   mistakes: fullUserStats.charts.mistakesPerGame[game] ?? 0,
-                })
+                }),
               )}
             />
             <h2 className="mb-4 mt-6 w-full text-center">Guesses per Game</h2>
@@ -185,7 +197,7 @@ const Page = () => {
                 (accuracy, game) => ({
                   game: game.toString(),
                   accuracy,
-                })
+                }),
               )}
             />
             <h2 className="mb-4 mt-6 w-full text-center">
@@ -197,7 +209,9 @@ const Page = () => {
       <Container>
         <FrequencyGraph
           chartData={(
-            Object.keys(fullUserStats.charts.letterAppearedFrequency) as Letter[]
+            Object.keys(
+              fullUserStats.charts.letterAppearedFrequency,
+            ) as Letter[]
           ).map((letter) => ({
             letter,
             appeared: fullUserStats.charts.letterAppearedFrequency[letter],
