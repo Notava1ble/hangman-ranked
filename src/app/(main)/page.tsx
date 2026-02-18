@@ -22,18 +22,18 @@ const Page = async () => {
     preloadedStats = await preloadQuery(
       api.user.getUserStats,
       {},
-      { token }
+      { token },
     ).catch(() => null);
     preloadedRecentGames = await preloadQuery(
       api.user.getRecentSoloGames,
       {},
-      { token }
+      { token },
     ).catch(() => null);
   }
   return (
     <div className="w-full h-full">
       <div className="w-full flex-center pt-8 md:pt-16">
-        <h1 className="text-3xl md:text-4xl font-semibold">
+        <h1 className="text-2xl md:text-4xl font-semibold sm:text-3xl">
           Hello there {user ? user.name : "Player"}
         </h1>
       </div>

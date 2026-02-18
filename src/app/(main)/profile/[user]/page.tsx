@@ -22,7 +22,7 @@ const Page = async ({ params }: { params: Promise<{ user: string }> }) => {
     {
       userName: user,
     },
-    { token: await convexAuthNextjsToken() }
+    { token: await convexAuthNextjsToken() },
   ).catch(() => {
     redirect("/not-found");
   });
@@ -32,47 +32,59 @@ const Page = async ({ params }: { params: Promise<{ user: string }> }) => {
   return (
     <div className="w-full h-full mb-32">
       <Container className="relative">
-        <div className="flex gap-4">
-          <Avatar className="size-18 rounded-lg">
-            <AvatarImage src={userInfo.image} />
-            <AvatarFallback />
-          </Avatar>
-          <div className="space-y-2">
-            <div>
-              {/* Temporary rank. Color text based or rank */}
-              <h1 className="font-semibold text-4xl">{userInfo.name}</h1>
-              <p className="text-xl">
-                <span className="text-green-800">
-                  {/* Add the rank image (diamond is placeholder) */}
-                  💎 {getRankFromElo(userInfo.elo)} [{userInfo.elo}]
-                </span>{" "}
-                <span>#{userInfo.rank}</span>
-              </p>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex gap-4">
+            <Avatar className="size-16 rounded-lg sm:size-18">
+              <AvatarImage src={userInfo.image} />
+              <AvatarFallback />
+            </Avatar>
+            <div className="space-y-2">
+              <div>
+                <h1 className="font-semibold text-3xl leading-tight break-all sm:text-4xl">
+                  {userInfo.name}
+                </h1>
+                <p className="text-lg sm:text-xl">
+                  <span className="text-green-800">
+                    {/* Add the rank image (diamond is placeholder) */}
+                    💎 {getRankFromElo(userInfo.elo)} [{userInfo.elo}]
+                  </span>{" "}
+                  <span>#{userInfo.rank}</span>
+                </p>
+              </div>
             </div>
           </div>
+
+          {userInfo.isSelf && (
+            <div className="flex gap-2 sm:justify-end sm:self-start">
+              <Button variant="outline" size="sm">
+                <Edit /> Edit
+              </Button>
+              <ProfileActionBtn
+                variant="destructive"
+                mutationApi="delete"
+                refresh={true}
+                size="sm"
+              >
+                <Trash /> Delete
+              </ProfileActionBtn>
+            </div>
+          )}
         </div>
-        <div className="mt-3">
+        <div className="mt-4 grid gap-1 text-sm sm:text-base">
           <p>Account created: {formatLastSeen(userInfo.accountCreated)}</p>
           <p>Last seen: {formatLastSeen(userInfo.userStats.lastSeen)}</p>
           {userInfo.personalScoreRecord && (
             <p>Personal best: {userInfo.personalScoreRecord}</p>
           )}
-          {userInfo.isSelf && <Link href="/stats">Go to stats</Link>}
-        </div>
-        {userInfo.isSelf && (
-          <div className="flex-center gap-2 absolute top-4 right-4">
-            <Button variant="outline">
-              <Edit /> Edit
-            </Button>
-            <ProfileActionBtn
-              variant="destructive"
-              mutationApi="delete"
-              refresh={true}
+          {userInfo.isSelf && (
+            <Link
+              href="/stats"
+              className="text-primary underline-offset-4 hover:underline"
             >
-              <Trash /> Delete
-            </ProfileActionBtn>
-          </div>
-        )}
+              Go to stats
+            </Link>
+          )}
+        </div>
       </Container>
       {recentGames.length > 3 && (
         <RankedGamesGraph eloProgression={getEloProgression(recentGames)} />

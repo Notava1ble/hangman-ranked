@@ -13,7 +13,7 @@ import {
 } from "./ui/table";
 import Container from "./Container";
 import LineChartComponent from "./LineChart";
-import { getEloProgression } from "@/lib/utils";
+import { cn, getEloProgression } from "@/lib/utils";
 import { fetchQuery } from "convex/nextjs";
 import { useState } from "react";
 import { Button } from "./ui/button";
@@ -36,42 +36,56 @@ export const RecentSoloGames = ({
 
   return (
     <Container>
-      <Table>
-        <TableCaption>Your recent Games</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[150px] pl-6">Word</TableHead>
-            <TableHead className="text-right">Score</TableHead>
-            <TableHead className="text-right">Mistakes</TableHead>
-            <TableHead className="text-right">Attempts</TableHead>
-            <TableHead className="pr-6 text-right">Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {recentGames.map((game) => {
-            return (
-              <TableRow
-                key={game._id}
-                className={`
-                  ${
-                    game.isWon
-                      ? "bg-green-100 hover:bg-green-200"
-                      : "bg-red-100 hover:bg-red-200"
-                  }
-                `}
-              >
-                <TableCell className="pl-6">{game.word}</TableCell>
-                <TableCell className="text-right">{game.score}</TableCell>
-                <TableCell className="text-right">{game.mistakes}</TableCell>
-                <TableCell className="text-right">{game.attempts}</TableCell>
-                <TableCell className="pr-6 text-right">
-                  {game.isAbandoned ? "Abandoned" : game.isWon ? "Won" : "Lost"}
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+      <div className="overflow-x-auto">
+        <Table className="min-w-full">
+          <TableCaption>Your recent Games</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-37.5 pl-6">Word</TableHead>
+              <TableHead className="text-right">Score</TableHead>
+              <TableHead className="hidden text-right sm:table-cell">
+                Mistakes
+              </TableHead>
+              <TableHead className="hidden text-right sm:table-cell">
+                Attempts
+              </TableHead>
+              <TableHead className="pr-6 text-right">Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {recentGames.map((game) => {
+              return (
+                <TableRow
+                  key={game._id}
+                  className={`
+                    ${
+                      game.isWon
+                        ? "bg-green-100 hover:bg-green-200"
+                        : "bg-red-100 hover:bg-red-200"
+                    }
+                  `}
+                >
+                  <TableCell className="pl-6">{game.word}</TableCell>
+                  <TableCell className="text-right">{game.score}</TableCell>
+                  <TableCell className="hidden text-right sm:table-cell">
+                    {game.mistakes}
+                  </TableCell>
+                  <TableCell className="hidden text-right sm:table-cell">
+                    {game.attempts}
+                  </TableCell>
+                  <TableCell className="pr-6 text-right">
+                    {game.isAbandoned
+                      ? "Abandoned"
+                      : game.isWon
+                        ? "Won"
+                        : "Lost"}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
     </Container>
   );
 };
@@ -120,11 +134,11 @@ export const RecentRankedGamesTable = ({
 
   return (
     <Container>
-      <Table>
+      <Table className="hidden md:table">
         <TableCaption>{tableTitle}</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[150px] pl-6">Word</TableHead>
+            <TableHead className="w-37.5 pl-6">Word</TableHead>
             <TableHead className="text-right">Opponent</TableHead>
             <TableHead className="text-right">Elo Change</TableHead>
             <TableHead className="text-right">Mistakes</TableHead>
@@ -150,7 +164,9 @@ export const RecentRankedGamesTable = ({
                   {game.opponent === "deleted-user" ? (
                     <p>{game.opponent}</p>
                   ) : (
-                    <Link href={`profile/${encodeURIComponent(game.opponent)}`}>
+                    <Link
+                      href={`/profile/${encodeURIComponent(game.opponent)}`}
+                    >
                       {game.opponent}
                     </Link>
                   )}
@@ -164,11 +180,11 @@ export const RecentRankedGamesTable = ({
                 </TableCell>
                 <TableCell className="text-right">{game.mistakes}</TableCell>
                 <TableCell className="text-right">{game.attempts}</TableCell>
-                <TableCell>
+                <TableCell className="pr-6 text-right">
                   {game.winner === "deleted-user" ? (
                     <p>{game.winner}</p>
                   ) : (
-                    <Link href={`profile/${game.winner}`}>{game.winner}</Link>
+                    <Link href={`/profile/${game.winner}`}>{game.winner}</Link>
                   )}
                 </TableCell>
               </TableRow>
@@ -177,23 +193,77 @@ export const RecentRankedGamesTable = ({
         </TableBody>
       </Table>
 
+      <div className="space-y-3 md:hidden">
+        <p className="text-sm text-muted-foreground">{tableTitle}</p>
+        {gamesToShow.map((game) => (
+          <div
+            key={game._id}
+            className={cn(
+              "rounded-md border p-4 shadow-xs space-y-3",
+              game.hasUserWon ? "bg-green-100" : "bg-red-100",
+            )}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <p className="font-semibold break-all">{game.word}</p>
+              <p className="text-sm font-medium">
+                {game.eloChange
+                  ? game.eloChange > 0
+                    ? `+${game.eloChange}`
+                    : game.eloChange
+                  : 0}
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="space-y-1">
+                <p className="text-muted-foreground">Opponent</p>
+                {game.opponent === "deleted-user" ? (
+                  <p>{game.opponent}</p>
+                ) : (
+                  <Link href={`/profile/${encodeURIComponent(game.opponent)}`}>
+                    {game.opponent}
+                  </Link>
+                )}
+              </div>
+              <div className="space-y-1">
+                <p className="text-muted-foreground">Winner</p>
+                {game.winner === "deleted-user" ? (
+                  <p>{game.winner}</p>
+                ) : (
+                  <Link href={`/profile/${game.winner}`}>{game.winner}</Link>
+                )}
+              </div>
+              <div className="space-y-1">
+                <p className="text-muted-foreground">Mistakes</p>
+                <p>{game.mistakes}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-muted-foreground">Attempts</p>
+                <p>{game.attempts}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
       {/* Pagination controls */}
       {paginate && totalPages > 1 && (
-        <div className="flex justify-center items-center gap-4 mt-4">
+        <div className="mt-4 flex items-center justify-center gap-3">
           <Button
             variant="outline"
             disabled={page === 0}
             onClick={() => setPage((p) => p - 1)}
+            size="icon"
           >
             <ArrowLeft />
           </Button>
-          <span>
+          <span className="text-sm sm:text-base">
             Page {page + 1} of {totalPages}
           </span>
           <Button
             variant="outline"
             disabled={page === totalPages - 1}
             onClick={() => setPage((p) => p + 1)}
+            size="icon"
           >
             <ArrowRight />
           </Button>
