@@ -1,0 +1,25 @@
+## TODO NEXT
+
+- [x] Make the game page with user stats and game
+- [ ] When implementing the leaderboard make it possible to click on an entry and view more. Make the animation with framer-motion like the example in the front page
+- [x] Make it so when the user closes the page, the game is automatically finished, to prevent extremely long game times. (not implemented quite)
+- [ ] Prevent matchmaking with inactive players in queue
+- [ ] Fix the race conditions in ranked matches
+- [x] Make the usernames unique and added when the user firsts signs up
+- [x] Add email+password login
+- [x] Add a field for username in signup form
+- [ ] Add the feature to sort leaderboard for time and score aswell
+- [x] Add a leaderboard for ranked
+- [x] Make the timer visable in mobile
+- [x] Prevent explicit words from usernames
+- [ ] Add a report system
+- [x] Add the option to leave matchmaking
+- [ ] Make leaderboard split in two routes (elo and solo) so it can persist the type of leaderboard showing between refreshes
+- [ ] Add the profile page, where you can view details about other players, and if the profile is yours, you have the option to delete the profile and change the name
+- [ ] Divide the stats page to general, solo and ranked specific stats
+- [ ] Make the first 5 games a user plays be placement games, meaning until completed, the user doesnt have an elo and its excluded from leaderboard
+
+- [x] Fix SignOut Error
+- [ ] Improve the UI/UX
+- [ ] Refactor code for clarity and maintainability
+- [ ] Handle Convex errors and implement better responses
